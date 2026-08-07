@@ -1,0 +1,29 @@
+---
+description: Estratégia de testes da API — unitários colocados e testes HTTP em test/
+globs: apps/api/**/*.{spec,test}.ts,apps/api/test/**/*.ts,apps/api/src/use-cases/**/*.ts
+alwaysApply: false
+---
+
+# API — testes
+
+## Dois tipos
+
+| Tipo | Onde | Como |
+|------|------|------|
+| Unitário | `src/use-cases/*.spec.ts` | InMemory repo, sem HTTP/Prisma |
+| HTTP | `test/<recurso>.test.ts` | `buildApp` + `inject`, factories mockadas com InMemory |
+
+## Regras
+
+- Todo Use Case novo → `.spec.ts` **ao lado** (não mover para `test/`).
+- Todo recurso HTTP → `test/<recurso>.test.ts` cobrindo 2xx e 4xx principais.
+- Testes de rota **não** usam Postgres.
+- Padrão Arrange/Act/Assert; assertar erros de domínio com `toBeInstanceOf`.
+
+## Referências
+
+- Unitário: `@apps/api/src/use-cases/create-lead.spec.ts`
+- HTTP: `@apps/api/test/leads.test.ts`
+- Helper: `@apps/api/test/helpers/test-leads-repository.ts`
+
+Após mudanças na API: `pnpm --filter @kikos/api test` (e typecheck/lint quando fizer sentido).

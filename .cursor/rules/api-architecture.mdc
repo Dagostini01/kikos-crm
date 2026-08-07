@@ -1,0 +1,52 @@
+---
+description: Arquitetura da API Fastify — camadas, HTTP, aliases e erros de domínio
+globs: apps/api/**/*.ts
+alwaysApply: false
+---
+
+# API — arquitetura
+
+Fluxo obrigatório:
+
+```text
+Controller → Use Case → Repository interface → Prisma/InMemory
+```
+
+## Camadas
+
+- Controller: Zod + factory + status HTTP. Sem Prisma, sem regra de negócio.
+- Use Case: regra de domínio. Sem Fastify, sem status HTTP, sem `Prisma*Repository` concreto.
+- Repository: contract em `repositories/<recurso>-repository.ts`; implementações em `in-memory/` e `prisma/`.
+- Factory: composition root em `use-cases/factories/`.
+
+## HTTP (por endpoint)
+
+```text
+<action>.ts + <action>.schema.ts + routes.ts
+```
+
+- Zod no controller; OpenAPI no `<action>.schema.ts` (Scalar, sem Swagger UI).
+- Delete: arquivo `delete.ts`, handler exportado como `remove`.
+- Registrar recurso com `app.register(...)` em `app.ts`.
+
+## Imports
+
+- Entre pastas de `src/`: `@/...` (com extensão `.js`).
+- Mesma pasta: `./...`.
+
+## Erros
+
+- Domínio em `use-cases/errors/` (ex.: `LeadAlreadyExistsError`).
+- Reutilize `ResourceNotFoundError` para 404 genérico.
+- Traduza domínio → HTTP só no controller / `error-handler.ts`.
+
+## Anti-padrões
+
+```ts
+// ❌ Use Case conhecendo HTTP/Prisma concreto
+// ❌ Controller com prisma.*
+// ❌ Service com create/find/update/delete no mesmo arquivo
+// ❌ Schema OpenAPI inline em routes.ts
+```
+
+Detalhes: `docs/BACKEND_ARCHITECTURE.md`.

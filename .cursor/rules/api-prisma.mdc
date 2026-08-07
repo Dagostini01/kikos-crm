@@ -1,0 +1,19 @@
+---
+description: Convenções Prisma e migrations da API
+globs: apps/api/prisma/**/*,apps/api/src/repositories/prisma/**/*.ts,apps/api/src/lib/prisma.ts
+alwaysApply: false
+---
+
+# Prisma
+
+- Prisma é infraestrutura: não vaze tipos/client para Use Cases e Controllers.
+- Reutilize o singleton em `@apps/api/src/lib/prisma.ts`.
+- Não altere migrations existentes sem necessidade.
+- Antes de migrar: revisar `schema.prisma` atual.
+- Campos de domínio vêm do schema — não inventar no Use Case/Controller.
+
+Ao adicionar entidade (ex.: Seller):
+
+1. Atualizar `schema.prisma`
+2. `pnpm --filter @kikos/api db:migrate`
+3. Só então repositories/use cases/HTTP

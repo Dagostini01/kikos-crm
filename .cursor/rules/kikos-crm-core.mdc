@@ -1,0 +1,31 @@
+---
+description: Contexto geral do monorepo Kikos CRM e ordem de desenvolvimento
+alwaysApply: true
+---
+
+# Kikos CRM — contexto
+
+Monorepo fullstack (desafio Kikos Fitness). Foco atual: **backend** em `apps/api`.
+
+## Antes de codar
+
+1. Leia `docs/BACKEND_ARCHITECTURE.md` e o padrão já existente em Lead.
+2. Não recrie o projeto nem troque stack sem necessidade.
+3. Não implemente frontend neste momento.
+4. Não instale libs sem necessidade (YAGNI).
+
+## Referência
+
+**Lead** é o módulo canônico. Novos módulos (Seller → Deal → Comments → Auth) devem copiar a mesma estrutura.
+
+Exemplos canônicos:
+
+- `@apps/api/src/use-cases/create-lead.ts`
+- `@apps/api/src/http/controllers/leads/`
+- `@apps/api/test/leads.test.ts`
+
+## Módulos novos
+
+Antes de implementar: planejar (schema Prisma, arquivos, rotas, regras, testes) e alinhar. Só então codar.
+
+Checklist: contract → in-memory → prisma → use cases + specs → errors → factories → controllers + schemas → routes → `app.register` → `test/<recurso>.test.ts` → typecheck/lint/test.
