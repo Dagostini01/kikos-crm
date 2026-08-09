@@ -13,5 +13,10 @@ export default defineConfig({
   },
   test: {
     include: ['src/**/*.{spec,test}.ts', 'test/**/*.{spec,test}.ts'],
+    env: {
+      JWT_SECRET: 'test-only-secret-key-with-32chars!!',
+      JWT_ACCESS_EXPIRES_IN: '15m',
+      JWT_REFRESH_EXPIRES_IN: '7d',
+    },
   },
 });

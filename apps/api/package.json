@@ -45,6 +45,7 @@
     "@scalar/fastify-api-reference": "^1.64.0",
     "dotenv": "^17.4.2",
     "fastify": "^5.11.2",
+    "jose": "^6.2.8",
     "pg": "^8.22.0",
     "zod": "^4.4.3"
   }
