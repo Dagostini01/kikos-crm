@@ -100,18 +100,21 @@ A organização conceitual desejada é semelhante a:
 src/
 ├── use-cases/
 │   ├── errors/
-│   ├── factories/
-│   ├── create-lead.ts
-│   ├── create-lead.spec.ts
-│   ├── get-lead.ts
-│   ├── get-lead.spec.ts
-│   ├── list-leads.ts
-│   ├── list-leads.spec.ts
-│   ├── update-lead.ts
-│   ├── update-lead.spec.ts
-│   ├── delete-lead.ts
-│   ├── delete-lead.spec.ts
-│   └── ...
+│   │   └── resource-not-found-error.ts
+│   └── leads/
+│       ├── errors/
+│       │   └── lead-already-exists-error.ts
+│       ├── factories/
+│       ├── create-lead.ts
+│       ├── create-lead.spec.ts
+│       ├── get-lead.ts
+│       ├── get-lead.spec.ts
+│       ├── list-leads.ts
+│       ├── list-leads.spec.ts
+│       ├── update-lead.ts
+│       ├── update-lead.spec.ts
+│       ├── delete-lead.ts
+│       └── delete-lead.spec.ts
 │
 ├── repositories/
 │   ├── in-memory/
@@ -279,12 +282,12 @@ Assim conseguimos trocar a infraestrutura sem alterar a regra de negócio.
 
 # 4. Use Cases
 
-A regra de negócio ficará em `use-cases`.
+A regra de negócio ficará em `use-cases/<recurso>/`.
 
 Comece pelo:
 
 ```text
-create-lead.ts
+use-cases/leads/create-lead.ts
 ```
 
 Crie uma classe semelhante conceitualmente a:
@@ -349,14 +352,18 @@ Não coloque essa regra no Controller.
 
 # 5. Errors
 
-Dentro de:
+Erros específicos de um recurso devem ficar co-localizados em
+`use-cases/<recurso>/errors/`. Erros compartilhados entre recursos devem ficar
+em `use-cases/errors/`.
 
 ```text
 use-cases/
-└── errors/
+├── errors/
+│   └── resource-not-found-error.ts
+└── leads/
+    └── errors/
+        └── lead-already-exists-error.ts
 ```
-
-crie erros de domínio específicos.
 
 Não quero código espalhado fazendo:
 
@@ -405,8 +412,8 @@ Cada Use Case deve possuir seu respectivo arquivo `.spec.ts`.
 Por exemplo:
 
 ```text
-create-lead.ts
-create-lead.spec.ts
+use-cases/leads/create-lead.ts
+use-cases/leads/create-lead.spec.ts
 ```
 
 Utilize **Vitest**, que é o padrão escolhido para este projeto.
@@ -462,14 +469,8 @@ Os testes devem validar comportamento, não detalhes internos irrelevantes da im
 
 # 7. Factories
 
-Dentro de:
-
-```text
-use-cases/
-└── factories/
-```
-
-crie factories responsáveis por montar os Use Cases utilizados na camada HTTP.
+Dentro de `use-cases/<recurso>/factories/`, crie factories responsáveis por
+montar os Use Cases utilizados na camada HTTP.
 
 Exemplo:
 
@@ -828,7 +829,7 @@ Regra de uso:
 Exemplos:
 
 ```ts
-import { makeCreateLeadUseCase } from '@/use-cases/factories/make-create-lead-use-case.js'
+import { makeCreateLeadUseCase } from '@/use-cases/leads/factories/make-create-lead-use-case.js'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error.js'
 import { create } from './create.js'
 ```
@@ -843,7 +844,7 @@ Existem **dois tipos** de testes, em pastas diferentes:
 
 | Tipo | Onde | Ferramenta | Dependência |
 |------|------|------------|-------------|
-| Unitário (Use Case) | `src/use-cases/*.spec.ts` | Vitest + InMemory Repository | Sem HTTP, sem Prisma |
+| Unitário (Use Case) | `src/use-cases/<recurso>/*.spec.ts` | Vitest + InMemory Repository | Sem HTTP, sem Prisma |
 | HTTP (rotas) | `test/*.test.ts` | Vitest + `app.inject()` | Sem banco real; factories mockadas com InMemory |
 
 Regras:
@@ -954,6 +955,24 @@ Deal terá regras de negócio mais complexas, porque deverá:
 - poder ser marcado como perdido.
 
 Por isso Seller vem antes de Deal.
+
+## Ciclo de status de Deal
+
+```text
+NEW → IN_PROGRESS
+  └──────────────→ WON
+  └──────────────→ LOST
+IN_PROGRESS ─────→ WON
+IN_PROGRESS ─────→ LOST
+```
+
+- Todo Deal é criado com status `NEW`.
+- `PATCH /deals/:id/status` realiza a transição para `IN_PROGRESS`.
+- `PATCH /deals/:id/won` e `PATCH /deals/:id/lost` encerram explicitamente o Deal.
+- `WON` e `LOST` são estados finais: Deals encerrados não podem ser editados ou transicionados.
+- Transições inválidas devem lançar `InvalidDealStatusTransitionError`.
+- Operações em Deals encerrados devem lançar `DealAlreadyClosedError`.
+
 ---
 
 # YAGNI
@@ -1134,19 +1153,21 @@ sempre respeitando a necessidade específica daquele domínio.
 
 - Health (`GET /health`)
 - Lead CRUD completo (`POST/GET/PUT/DELETE /leads`)
+- Seller CRUD completo (`POST/GET/PUT/DELETE /sellers`)
+- Deal CRUD e ciclo de status (`NEW → IN_PROGRESS → WON/LOST`)
 - Path alias `@/`
 - Testes unitários (use cases) + testes HTTP (`test/`)
 - OpenAPI/Scalar
 
-Lead é a referência. Novos módulos devem seguir o mesmo padrão.
+Lead, Seller e Deal consolidam o padrão. Novos módulos devem seguir a mesma arquitetura.
 
 ## Próximo módulo
 
 ```text
-Seller
+Comments
 ```
 
-Antes de implementar Seller (ou qualquer módulo novo):
+Antes de implementar Comments (ou qualquer módulo novo):
 
 1. analise o Prisma Schema e proponha/ajuste o model se necessário;
 2. apresente o planejamento (arquivos a criar/alterar, regras de negócio, rotas, testes);
@@ -1173,24 +1194,26 @@ Checklist mínimo por módulo novo:
 src/
 ├── use-cases/
 │   ├── errors/
-│   │   ├── lead-already-exists-error.ts
 │   │   └── resource-not-found-error.ts
-│   ├── factories/
-│   │   ├── make-create-lead-use-case.ts
-│   │   ├── make-get-lead-use-case.ts
-│   │   ├── make-list-leads-use-case.ts
-│   │   ├── make-update-lead-use-case.ts
-│   │   └── make-delete-lead-use-case.ts
-│   ├── create-lead.ts
-│   ├── create-lead.spec.ts
-│   ├── get-lead.ts
-│   ├── get-lead.spec.ts
-│   ├── list-leads.ts
-│   ├── list-leads.spec.ts
-│   ├── update-lead.ts
-│   ├── update-lead.spec.ts
-│   ├── delete-lead.ts
-│   └── delete-lead.spec.ts
+│   └── leads/
+│       ├── errors/
+│       │   └── lead-already-exists-error.ts
+│       ├── factories/
+│       │   ├── make-create-lead-use-case.ts
+│       │   ├── make-get-lead-use-case.ts
+│       │   ├── make-list-leads-use-case.ts
+│       │   ├── make-update-lead-use-case.ts
+│       │   └── make-delete-lead-use-case.ts
+│       ├── create-lead.ts
+│       ├── create-lead.spec.ts
+│       ├── get-lead.ts
+│       ├── get-lead.spec.ts
+│       ├── list-leads.ts
+│       ├── list-leads.spec.ts
+│       ├── update-lead.ts
+│       ├── update-lead.spec.ts
+│       ├── delete-lead.ts
+│       └── delete-lead.spec.ts
 │
 ├── repositories/
 │   ├── in-memory/

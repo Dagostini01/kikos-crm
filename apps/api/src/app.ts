@@ -3,8 +3,10 @@ import scalarApiReference from '@scalar/fastify-api-reference';
 import Fastify, { type FastifyBaseLogger } from 'fastify';
 
 import { env } from '@/env/index.js';
+import { dealsRoutes } from '@/http/controllers/deals/routes.js';
 import { healthRoutes } from '@/http/controllers/health/routes.js';
 import { leadsRoutes } from '@/http/controllers/leads/routes.js';
+import { sellersRoutes } from '@/http/controllers/sellers/routes.js';
 import { errorHandler } from '@/http/error-handler.js';
 import { database as prismaDatabase, type Database } from '@/lib/prisma.js';
 
@@ -42,6 +44,8 @@ export async function buildApp({ database, logger = false }: AppOptions) {
 
   await app.register(healthRoutes, { database });
   await app.register(leadsRoutes);
+  await app.register(sellersRoutes);
+  await app.register(dealsRoutes);
 
   return app;
 }
