@@ -1,19 +1,77 @@
 # Kikos CRM
 
-Monorepo pnpm do desafio Kikos Fitness: CRM com autenticação, leads, negócios (funil), vendedores e comentários.
+Solução do [desafio técnico Fullstack — Kikos Fitness](docs/DESCRIPTION.md): CRM em monorepo para gestão de leads e negócios de um time de vendas.
 
-Stack:
+## Demo online
 
-- **API:** Fastify + Prisma + PostgreSQL (`apps/api`)
-- **Web:** React 19 + Vite + TypeScript + React Router + shadcn/ui + Tailwind CSS v4 (`apps/web`)
+| Peça | URL |
+| --- | --- |
+| Frontend | https://kikos-crm-web.vercel.app |
+| API | https://kikos-crm.onrender.com |
+| Health | https://kikos-crm.onrender.com/health |
+| Docs da API | https://kikos-crm.onrender.com/reference |
 
-## Requisitos
+### Conta de demonstração (ADMIN)
+
+| Campo | Valor |
+| --- | --- |
+| E-mail | `admin@admin.com.br` |
+| Senha | `admin123456` |
+
+No plano free do Render a API **hiberna** após ~15 min sem tráfego. Se o login falhar na primeira tentativa, abra o [health](https://kikos-crm.onrender.com/health), espere ~20–30s e tente de novo.
+
+## Stack
+
+| Camada | Tecnologia |
+| --- | --- |
+| Monorepo | pnpm workspaces |
+| API | Fastify + Prisma + PostgreSQL (`apps/api`) |
+| Web | React 19 + Vite + TypeScript + React Router + shadcn/ui + Tailwind CSS v4 (`apps/web`) |
+| Auth | JWT (access) + refresh token opaco |
+| Deploy | Neon (DB) + Render (API) + Vercel (web) |
+
+Referência visual: prints em `img/screens/` e [Figma do desafio](https://www.figma.com/design/torONxnd1LUOplv6f9ccgA/Kiko---CRM) (não pixel-perfect).
+
+---
+
+## Requisitos do desafio × entrega
+
+Comparativo com as **funcionalidades obrigatórias** de `docs/DESCRIPTION.md`:
+
+| Solicitado | Status | Como foi atendido |
+| --- | --- | --- |
+| Monorepo (front + back) | Entregue | `apps/api` + `apps/web` no mesmo repositório |
+| Login / logout | Entregue | Registro, login, logout, sessão com refresh automático no client |
+| Criar lead | Entregue | Cadastro e listagem de leads (nome + e-mail) |
+| Criar negócio | Entregue | Deal vinculado a lead + vendedor + valor (`valueInCents`) |
+| Status do negócio (funil) | Entregue | `OPEN → QUALIFICATION → PROPOSAL → CLOSED` |
+| Marcar ganho / perdido | Entregue | Ações explícitas no detalhe e no board (`/won`, `/lost`, reopen) |
+| Atrelar a um vendedor | Entregue | Todo deal exige `sellerId`; CRUD de sellers (criar = ADMIN) |
+| Comentários | Entregue | Comentários no **detalhe do negócio** (UI). API também suporta comentários em lead |
+| Board (kanban) | Entregue | Colunas por status; transição por **botões** (não drag-and-drop) + detalhes / ganho / perdido |
+| README (como rodar + decisões) | Entregue | Este arquivo |
+| Hospedar a aplicação (bônus) | Entregue | Links na seção [Demo online](#demo-online) |
+| Funcionalidade de IA (bônus) | Não feito | Fora do escopo desta entrega |
+| Testes automatizados (diferencial) | Parcial | Suite de testes na API (`pnpm test`); sem E2E no web |
+
+### Escopo consciente / adaptações
+
+- UI alinhada aos prints/Figma, sem pixel-perfect.
+- Kanban com botões de transição (aceito pelo enunciado: “arrastar e soltar, **ou outra ação de UI**”).
+- Comentários na UI focados no negócio; endpoint de comentários em lead existe na API.
+- Lead no schema: nome + e-mail (sem inventar empresa/telefone fora do contrato).
+
+---
+
+## Como rodar localmente
+
+### Requisitos
 
 - Node.js 22.19
 - pnpm 11.20
 - Docker Desktop com Docker Compose
 
-## Como rodar
+### Setup
 
 ```powershell
 pnpm install
@@ -33,137 +91,32 @@ pnpm dev:web
 | Serviço | URL |
 | --- | --- |
 | API | http://localhost:3333 |
-| Docs da API | http://localhost:3333/reference |
+| Docs | http://localhost:3333/reference |
 | Web | http://localhost:5173 |
-
-Health check:
 
 ```powershell
 Invoke-RestMethod http://localhost:3333/health
 ```
 
-O arquivo `apps/api/.env` contém somente valores locais e não é versionado. Atualize
-`apps/api/.env.example` sempre que uma variável obrigatória for adicionada.
+`apps/api/.env` não é versionado. Modelo: `apps/api/.env.example`.  
+Web (opcional): `apps/web/.env` com `VITE_API_URL=/api` (proxy do Vite em dev).
 
-Opcional no web: `apps/web/.env` com `VITE_API_URL=http://localhost:3333` (padrão).
+### Primeiro acesso local
 
-### Primeiro acesso
-
-1. Abra http://localhost:5173/register e crie a conta.
+1. http://localhost:5173/register — crie a conta.
 2. O **primeiro usuário** do banco vira `ADMIN`; os seguintes, `MEMBER`.
-3. Faça login e use o CRM (Dashboard, Leads, Negócios, Vendedores).
+3. Use Dashboard, Leads, Negócios e Vendedores.
 
-## Comandos
+### Comandos úteis
 
-- `pnpm dev` / `pnpm dev:api`: inicia a API com reload.
-- `pnpm dev:web`: inicia o frontend Vite.
-- `pnpm build`: build da API.
-- `pnpm build:web`: build do frontend.
-- `pnpm start`: executa a API em produção.
-- `pnpm lint`: ESLint (api + web).
-- `pnpm typecheck`: typecheck (api + web).
-- `pnpm test`: testes da API.
-- `pnpm db:generate` / `pnpm db:migrate` / `pnpm db:migrate:deploy` / `pnpm db:studio`: Prisma.
+- `pnpm dev:api` / `pnpm dev:web`
+- `pnpm build` / `pnpm build:web` / `pnpm start`
+- `pnpm lint` / `pnpm typecheck` / `pnpm test`
+- `pnpm db:generate` / `pnpm db:migrate` / `pnpm db:migrate:deploy` / `pnpm db:studio`
 
-## Deploy gratuito (Neon + Render + Vercel)
+### Banco local (Docker)
 
-Combo sem cartão para demo:
-
-| Peça | Onde | Plano |
-| --- | --- | --- |
-| Postgres | [Neon](https://neon.tech) | Free |
-| API | [Render](https://render.com) | Free Web Service |
-| Web | [Vercel](https://vercel.com) | Hobby |
-
-Ordem: banco → API → web.
-
-### 1. Neon
-
-1. Crie um projeto e copie a `DATABASE_URL`.
-2. Aplique as migrations (com a URL no ambiente):
-
-```powershell
-$env:DATABASE_URL="postgresql://..."
-pnpm db:migrate:deploy
-```
-
-### 2. Render (API)
-
-1. New → Blueprint → use o `render.yaml` da raiz, **ou** Web Service apontando para este repo.
-2. Build / start (já no blueprint):
-
-```text
-Build: pnpm install && pnpm db:generate && pnpm --filter @kikos/api build
-Start: pnpm --filter @kikos/api start
-```
-
-3. Env vars obrigatórias:
-
-| Variável | Exemplo |
-| --- | --- |
-| `DATABASE_URL` | connection string do Neon |
-| `JWT_SECRET` | string aleatória com ≥ 32 caracteres |
-| `CORS_ORIGIN` | `https://seu-app.vercel.app` (várias: separadas por vírgula) |
-| `NODE_ENV` | `production` |
-| `HOST` | `0.0.0.0` |
-
-`PORT` é injetado pelo Render; a API já lê `process.env.PORT`.
-
-4. Confirme: `GET https://sua-api.onrender.com/health`.
-
-No plano free a API **hiberna** após ~15 min sem tráfego; o 1º request pode demorar ~20–30s. Pingue `/health` antes de uma demo.
-
-### 3. Vercel (web)
-
-1. Import do GitHub (root do monorepo). O `vercel.json` na raiz já define install/build/output e rewrite SPA.
-2. Env var de Production/Preview:
-
-```text
-VITE_API_URL=https://sua-api.onrender.com
-```
-
-3. Deploy. Abra a URL `*.vercel.app`, registre o primeiro usuário (vira `ADMIN`) e teste o fluxo.
-
-Se o Root Directory do projeto for `apps/web`:
-- Install: `cd ../.. && pnpm install`
-- Build: `pnpm build`
-- Output: `dist`
-- Inclua arquivos fora do root (workspace pnpm)
-- Não precisa de `DATABASE_URL` no projeto web
-
-## Decisões técnicas
-
-### Arquitetura
-
-- **Backend em camadas:** controllers HTTP → use-cases → repositories (Prisma). Domínio e regras ficam nos use-cases; o Prisma não vaza para a camada HTTP.
-- **Frontend por features:** `Page → hook → api client → HttpClient → API`. Auth é o módulo canônico; Leads/Deals/Sellers/Comments/Dashboard seguem o mesmo padrão.
-- **Contrato da API manda:** o frontend não inventa campos. Prints em `img/screens/` guiam a UI; o schema Prisma/OpenAPI define o que existe de fato.
-
-### Autenticação e autorização
-
-- JWT access + refresh token opaco (persistido e rotacionado).
-- Refresh automático no `HttpClient` do web em `401`.
-- Roles: `ADMIN` / `MEMBER`. Criação de vendedor é `ADMIN`-only (API e UI).
-- Role não é escolhida no registro: o primeiro usuário do sistema é `ADMIN`.
-
-### Domínio
-
-- **Lead** é a entidade central (nome + e-mail). Listagem enriquece com vendedor, status e última interação a partir do negócio/comentário mais recente (relações Prisma), sem campos inventados no schema.
-- **Deal** tem status `OPEN | QUALIFICATION | PROPOSAL | CLOSED` e valor em **centavos** (`valueInCents`).
-- Transições de status são **explícitas** via endpoints (`/qualification`, `/proposal`, `/won`, `/lost`, `/reopen`) — o kanban no web usa botões, não drag-and-drop.
-- **Comentários** no escopo entregue ficam no detalhe do negócio (`POST/GET /deals/:id/comments`). A API também aceita comentários em leads.
-- Soft delete em leads/deals/sellers; listagens padrão ocultam removidos.
-
-### Frontend / UX
-
-- UI com **shadcn/ui + Tailwind v4**, alinhada aos prints sem pixel-perfect.
-- Rotas protegidas (`ProtectedRoute`) e públicas (`PublicOnlyRoute`).
-- Dashboard com totais e pipeline por status, derivados da listagem de deals.
-- Filtros de leads (status/vendedor) no client sobre a lista enriquecida da API.
-
-## Banco local
-
-O PostgreSQL usa a porta `5432` e persiste dados no volume `postgres_data`.
+PostgreSQL na porta `5432`, volume `postgres_data`.
 
 ```powershell
 docker compose ps
@@ -171,7 +124,52 @@ docker compose logs postgres
 docker compose down
 ```
 
-Use `docker compose down -v` apenas quando quiser apagar todos os dados locais.
+`docker compose down -v` apaga os dados locais.
+
+---
+
+## Decisões técnicas
+
+### Arquitetura
+
+- **API em camadas:** HTTP controllers → use-cases → repositories (Prisma). Regras no use-case; Prisma não vaza para o HTTP.
+- **Web por features:** `Page → hook → api client → HttpClient → API` (Auth como módulo canônico).
+- **Contrato da API manda:** o client não inventa campos; OpenAPI/Prisma são a fonte da verdade.
+
+### Autenticação e papéis
+
+- JWT access + refresh rotacionado.
+- Refresh automático no `HttpClient` em `401`.
+- Roles `ADMIN` / `MEMBER`. Criar vendedor é `ADMIN`-only.
+- Role não é escolhida no formulário: primeiro usuário do sistema = `ADMIN`.
+
+### Domínio
+
+- Lead: nome + e-mail; listagem enriquecida com vendedor/status/última interação via relações.
+- Deal: status de funil + valor em centavos; transições só por endpoints dedicados.
+- Soft delete em leads/deals/sellers.
+
+### Frontend
+
+- shadcn/ui + Tailwind v4.
+- Rotas protegidas / públicas.
+- Dashboard com totais e pipeline por status.
+- Filtros de leads (status/vendedor) no client.
+
+### Deploy (já publicado)
+
+| Peça | Serviço |
+| --- | --- |
+| Postgres | Neon |
+| API | Render (`render.yaml`) |
+| Web | Vercel (`vercel.json` / Root `apps/web`) |
+
+Variáveis relevantes da API em produção: `DATABASE_URL`, `JWT_SECRET` (≥32), `CORS_ORIGIN` (URL do front), `HOST=0.0.0.0`, `NODE_ENV=production`.  
+Web: `VITE_API_URL` apontando para a API pública.
+
+Detalhes de arquitetura: `docs/BACKEND_ARCHITECTURE.md` e `docs/FRONTEND_ARCHITECTURE.md`.
+
+---
 
 ## Estrutura
 
@@ -180,12 +178,12 @@ apps/
   api/          backend Fastify + Prisma
   web/          frontend React + Vite
 docs/
-  DESCRIPTION.md
+  DESCRIPTION.md              enunciado do desafio
   BACKEND_ARCHITECTURE.md
   FRONTEND_ARCHITECTURE.md
 img/screens/    referência visual das telas
 docker-compose.yml
 pnpm-workspace.yaml
+render.yaml
+vercel.json
 ```
-
-Documentação detalhada: `docs/BACKEND_ARCHITECTURE.md` e `docs/FRONTEND_ARCHITECTURE.md`.
