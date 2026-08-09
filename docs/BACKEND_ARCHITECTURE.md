@@ -973,6 +973,16 @@ IN_PROGRESS ─────→ LOST
 - Transições inválidas devem lançar `InvalidDealStatusTransitionError`.
 - Operações em Deals encerrados devem lançar `DealAlreadyClosedError`.
 
+## Comentários por recurso
+
+- Cada comentário pertence a exatamente um Lead ou a um Deal.
+- O contrato de criação deve impedir ambos os alvos simultaneamente.
+- A migration adiciona uma restrição `CHECK` para proteger essa invariável no PostgreSQL.
+- Criação e listagem usam rotas aninhadas em `/leads/:leadId/comments` e `/deals/:dealId/comments`.
+- Leitura, edição e exclusão individuais usam `/comments/:id`.
+- Conteúdo vazio após `trim` deve lançar `InvalidCommentContentError`.
+- Comentários podem ser adicionados a Deals encerrados para manter o histórico.
+
 ---
 
 # YAGNI
@@ -1155,19 +1165,20 @@ sempre respeitando a necessidade específica daquele domínio.
 - Lead CRUD completo (`POST/GET/PUT/DELETE /leads`)
 - Seller CRUD completo (`POST/GET/PUT/DELETE /sellers`)
 - Deal CRUD e ciclo de status (`NEW → IN_PROGRESS → WON/LOST`)
+- Comments vinculados exclusivamente a Lead ou Deal
 - Path alias `@/`
 - Testes unitários (use cases) + testes HTTP (`test/`)
 - OpenAPI/Scalar
 
-Lead, Seller e Deal consolidam o padrão. Novos módulos devem seguir a mesma arquitetura.
+Lead, Seller, Deal e Comments consolidam o padrão. Novos módulos devem seguir a mesma arquitetura.
 
 ## Próximo módulo
 
 ```text
-Comments
+Authentication
 ```
 
-Antes de implementar Comments (ou qualquer módulo novo):
+Antes de implementar Authentication (ou qualquer módulo novo):
 
 1. analise o Prisma Schema e proponha/ajuste o model se necessário;
 2. apresente o planejamento (arquivos a criar/alterar, regras de negócio, rotas, testes);
