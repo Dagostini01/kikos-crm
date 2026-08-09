@@ -983,6 +983,22 @@ IN_PROGRESS ─────→ LOST
 - Conteúdo vazio após `trim` deve lançar `InvalidCommentContentError`.
 - Comentários podem ser adicionados a Deals encerrados para manter o histórico.
 
+## Authentication
+
+- Model `User` separado (`name`, `email` único, `passwordHash`). `Seller` permanece entidade de negócio, sem vínculo obrigatório nesta etapa.
+- Access token: JWT Bearer (`Authorization: Bearer <token>`), curto, assinado com `JWT_SECRET`.
+- Refresh token: opaco, persistido apenas como hash (`RefreshToken.tokenHash`); resposta devolve o valor em claro uma vez.
+- Rotas:
+  - `POST /auth/register` → `201` com `{ user, accessToken, refreshToken }`
+  - `POST /auth/login` → `200` com o mesmo shape
+  - `POST /auth/refresh` → `200` com novo par (rotação: revoga o refresh anterior)
+  - `POST /auth/logout` → `204` (revoga o refresh; idempotente)
+  - `GET /auth/me` → `200` com `{ user }` (Bearer obrigatório)
+- Erros: `InvalidCredentialsError` / `InvalidRefreshTokenError` → `401`; `UserAlreadyExistsError` → `409`; senha inválida → `400`.
+- Rotas protegidas: `/leads`, `/sellers`, `/deals`, `/comments` e `GET /auth/me`.
+- Rotas públicas: `/health` e demais `/auth/*` (exceto `/me`).
+- Env: `JWT_SECRET`, `JWT_ACCESS_EXPIRES_IN` (default `15m`), `JWT_REFRESH_EXPIRES_IN` (default `7d`).
+
 ---
 
 # YAGNI
@@ -1166,19 +1182,20 @@ sempre respeitando a necessidade específica daquele domínio.
 - Seller CRUD completo (`POST/GET/PUT/DELETE /sellers`)
 - Deal CRUD e ciclo de status (`NEW → IN_PROGRESS → WON/LOST`)
 - Comments vinculados exclusivamente a Lead ou Deal
+- Authentication (register/login/refresh/logout/me) com JWT + refresh e rotas CRM protegidas
 - Path alias `@/`
 - Testes unitários (use cases) + testes HTTP (`test/`)
 - OpenAPI/Scalar
 
-Lead, Seller, Deal e Comments consolidam o padrão. Novos módulos devem seguir a mesma arquitetura.
+Lead, Seller, Deal, Comments e Authentication consolidam o padrão backend. Novos módulos devem seguir a mesma arquitetura.
 
-## Próximo módulo
+## Próximo passo
 
 ```text
-Authentication
+Frontend (monorepo) — login e fluxo CRM consumindo a API
 ```
 
-Antes de implementar Authentication (ou qualquer módulo novo):
+Antes de implementar o frontend (ou qualquer módulo novo):
 
 1. analise o Prisma Schema e proponha/ajuste o model se necessário;
 2. apresente o planejamento (arquivos a criar/alterar, regras de negócio, rotas, testes);
