@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 
+import { verifyJwt } from '@/http/middlewares/verify-jwt.js';
 import { createDealComment } from './create-deal-comment.js';
 import { createDealCommentSchema } from './create-deal-comment.schema.js';
 import { createLeadComment } from './create-lead-comment.js';
@@ -16,6 +17,8 @@ import { update } from './update.js';
 import { updateCommentSchema } from './update.schema.js';
 
 export async function commentsRoutes(app: FastifyInstance) {
+  app.addHook('onRequest', verifyJwt);
+
   app.post(
     '/leads/:leadId/comments',
     { schema: createLeadCommentSchema },

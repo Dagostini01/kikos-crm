@@ -10,6 +10,7 @@ import { GetCommentUseCase } from '@/use-cases/comments/get-comment.js';
 import { ListDealCommentsUseCase } from '@/use-cases/comments/list-deal-comments.js';
 import { ListLeadCommentsUseCase } from '@/use-cases/comments/list-lead-comments.js';
 import { UpdateCommentUseCase } from '@/use-cases/comments/update-comment.js';
+import { withAuth } from './helpers/auth.js';
 import {
   resetTestCommentsRepository,
   testCommentDealsRepository,
@@ -89,7 +90,7 @@ const apps: FastifyInstance[] = [];
 async function createApp() {
   const app = await buildApp({ database: createDatabaseMock() });
   apps.push(app);
-  return app;
+  return withAuth(app);
 }
 
 async function createLead() {

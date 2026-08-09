@@ -8,6 +8,7 @@ import { DeleteLeadUseCase } from '@/use-cases/leads/delete-lead.js';
 import { GetLeadUseCase } from '@/use-cases/leads/get-lead.js';
 import { ListLeadsUseCase } from '@/use-cases/leads/list-leads.js';
 import { UpdateLeadUseCase } from '@/use-cases/leads/update-lead.js';
+import { withAuth } from './helpers/auth.js';
 import {
   resetTestLeadsRepository,
   testLeadsRepository,
@@ -47,7 +48,7 @@ const apps: FastifyInstance[] = [];
 async function createApp() {
   const app = await buildApp({ database: createDatabaseMock() });
   apps.push(app);
-  return app;
+  return withAuth(app);
 }
 
 beforeEach(() => {

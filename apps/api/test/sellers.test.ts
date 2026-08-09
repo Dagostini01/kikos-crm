@@ -8,6 +8,7 @@ import { DeleteSellerUseCase } from '@/use-cases/sellers/delete-seller.js';
 import { GetSellerUseCase } from '@/use-cases/sellers/get-seller.js';
 import { ListSellersUseCase } from '@/use-cases/sellers/list-sellers.js';
 import { UpdateSellerUseCase } from '@/use-cases/sellers/update-seller.js';
+import { withAuth } from './helpers/auth.js';
 import {
   resetTestSellersRepository,
   testSellersRepository,
@@ -42,7 +43,7 @@ const apps: FastifyInstance[] = [];
 async function createApp() {
   const app = await buildApp({ database: createDatabaseMock() });
   apps.push(app);
-  return app;
+  return withAuth(app);
 }
 
 beforeEach(resetTestSellersRepository);

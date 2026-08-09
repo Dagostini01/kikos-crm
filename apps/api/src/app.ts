@@ -3,6 +3,7 @@ import scalarApiReference from '@scalar/fastify-api-reference';
 import Fastify, { type FastifyBaseLogger } from 'fastify';
 
 import { env } from '@/env/index.js';
+import { authRoutes } from '@/http/controllers/auth/routes.js';
 import { commentsRoutes } from '@/http/controllers/comments/routes.js';
 import { dealsRoutes } from '@/http/controllers/deals/routes.js';
 import { healthRoutes } from '@/http/controllers/health/routes.js';
@@ -26,6 +27,15 @@ export async function buildApp({ database, logger = false }: AppOptions) {
         description: 'HTTP API for the Kikos CRM',
         version: '0.1.0',
       },
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+          },
+        },
+      },
     },
   });
 
@@ -44,6 +54,7 @@ export async function buildApp({ database, logger = false }: AppOptions) {
   });
 
   await app.register(healthRoutes, { database });
+  await app.register(authRoutes);
   await app.register(leadsRoutes);
   await app.register(sellersRoutes);
   await app.register(dealsRoutes);

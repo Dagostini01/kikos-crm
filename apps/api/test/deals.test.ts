@@ -11,6 +11,7 @@ import { MarkDealLostUseCase } from '@/use-cases/deals/mark-deal-lost.js';
 import { MarkDealWonUseCase } from '@/use-cases/deals/mark-deal-won.js';
 import { UpdateDealStatusUseCase } from '@/use-cases/deals/update-deal-status.js';
 import { UpdateDealUseCase } from '@/use-cases/deals/update-deal.js';
+import { withAuth } from './helpers/auth.js';
 import {
   resetTestDealsRepository,
   testDealLeadsRepository,
@@ -67,7 +68,7 @@ const apps: FastifyInstance[] = [];
 async function createApp() {
   const app = await buildApp({ database: createDatabaseMock() });
   apps.push(app);
-  return app;
+  return withAuth(app);
 }
 
 async function createRelations() {

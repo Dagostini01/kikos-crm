@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 
+import { verifyJwt } from '@/http/middlewares/verify-jwt.js';
 import { create } from './create.js';
 import { createDealSchema } from './create.schema.js';
 import { remove } from './delete.js';
@@ -18,6 +19,8 @@ import { update } from './update.js';
 import { updateDealSchema } from './update.schema.js';
 
 export async function dealsRoutes(app: FastifyInstance) {
+  app.addHook('onRequest', verifyJwt);
+
   app.post('/deals', { schema: createDealSchema }, create);
   app.get('/deals', { schema: listDealsSchema }, list);
   app.get('/deals/:id', { schema: getDealSchema }, get);
