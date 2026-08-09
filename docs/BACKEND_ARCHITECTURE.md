@@ -982,22 +982,31 @@ IN_PROGRESS ─────→ LOST
 - Leitura, edição e exclusão individuais usam `/comments/:id`.
 - Conteúdo vazio após `trim` deve lançar `InvalidCommentContentError`.
 - Comentários podem ser adicionados a Deals encerrados para manter o histórico.
+- Todo comentário tem `authorId` (User autenticado na criação) e retorna `author: { id, name, email }`.
 
 ## Authentication
 
-- Model `User` separado (`name`, `email` único, `passwordHash`). `Seller` permanece entidade de negócio, sem vínculo obrigatório nesta etapa.
-- Access token: JWT Bearer (`Authorization: Bearer <token>`), curto, assinado com `JWT_SECRET`.
+- Model `User` separado (`name`, `email` único, `passwordHash`, `role`, `sellerId?`).
+- Roles: `ADMIN` | `MEMBER`. O primeiro usuário registrado vira `ADMIN`; os demais, `MEMBER`.
+- Vínculo opcional `User.sellerId` → `Seller` (um User por Seller).
+- Access token: JWT Bearer com `sub` + `role`, assinado com `JWT_SECRET`.
 - Refresh token: opaco, persistido apenas como hash (`RefreshToken.tokenHash`); resposta devolve o valor em claro uma vez.
 - Rotas:
-  - `POST /auth/register` → `201` com `{ user, accessToken, refreshToken }`
+  - `POST /auth/register` → `201` com `{ user, accessToken, refreshToken }` (body opcional `sellerId`)
   - `POST /auth/login` → `200` com o mesmo shape
   - `POST /auth/refresh` → `200` com novo par (rotação: revoga o refresh anterior)
   - `POST /auth/logout` → `204` (revoga o refresh; idempotente)
   - `GET /auth/me` → `200` com `{ user }` (Bearer obrigatório)
-- Erros: `InvalidCredentialsError` / `InvalidRefreshTokenError` → `401`; `UserAlreadyExistsError` → `409`; senha inválida → `400`.
+- Erros: `InvalidCredentialsError` / `InvalidRefreshTokenError` → `401`; `UserAlreadyExistsError` → `409`; senha inválida → `400`; role insuficiente → `403`.
 - Rotas protegidas: `/leads`, `/sellers`, `/deals`, `/comments` e `GET /auth/me`.
+- Mutações de Seller (`POST/PUT/DELETE`) exigem role `ADMIN`.
 - Rotas públicas: `/health` e demais `/auth/*` (exceto `/me`).
 - Env: `JWT_SECRET`, `JWT_ACCESS_EXPIRES_IN` (default `15m`), `JWT_REFRESH_EXPIRES_IN` (default `7d`).
+
+## Filtro de Deals
+
+- `GET /deals?status=` filtra negócios por status do funil (`NEW` | `IN_PROGRESS` | `WON` | `LOST`).
+
 
 ---
 
