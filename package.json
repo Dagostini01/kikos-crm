@@ -21,6 +21,7 @@
     "test": "pnpm --filter @kikos/api test",
     "db:generate": "pnpm --filter @kikos/api db:generate",
     "db:migrate": "pnpm --filter @kikos/api db:migrate",
+    "db:migrate:deploy": "pnpm --filter @kikos/api db:migrate:deploy",
     "db:studio": "pnpm --filter @kikos/api db:studio"
   },
   "license": "UNLICENSED"

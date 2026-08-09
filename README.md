@@ -63,7 +63,73 @@ Opcional no web: `apps/web/.env` com `VITE_API_URL=http://localhost:3333` (padr�
 - `pnpm lint`: ESLint (api + web).
 - `pnpm typecheck`: typecheck (api + web).
 - `pnpm test`: testes da API.
-- `pnpm db:generate` / `pnpm db:migrate` / `pnpm db:studio`: Prisma.
+- `pnpm db:generate` / `pnpm db:migrate` / `pnpm db:migrate:deploy` / `pnpm db:studio`: Prisma.
+
+## Deploy gratuito (Neon + Render + Vercel)
+
+Combo sem cartão para demo:
+
+| Peça | Onde | Plano |
+| --- | --- | --- |
+| Postgres | [Neon](https://neon.tech) | Free |
+| API | [Render](https://render.com) | Free Web Service |
+| Web | [Vercel](https://vercel.com) | Hobby |
+
+Ordem: banco → API → web.
+
+### 1. Neon
+
+1. Crie um projeto e copie a `DATABASE_URL`.
+2. Aplique as migrations (com a URL no ambiente):
+
+```powershell
+$env:DATABASE_URL="postgresql://..."
+pnpm db:migrate:deploy
+```
+
+### 2. Render (API)
+
+1. New → Blueprint → use o `render.yaml` da raiz, **ou** Web Service apontando para este repo.
+2. Build / start (já no blueprint):
+
+```text
+Build: pnpm install && pnpm db:generate && pnpm --filter @kikos/api build
+Start: pnpm --filter @kikos/api start
+```
+
+3. Env vars obrigatórias:
+
+| Variável | Exemplo |
+| --- | --- |
+| `DATABASE_URL` | connection string do Neon |
+| `JWT_SECRET` | string aleatória com ≥ 32 caracteres |
+| `CORS_ORIGIN` | `https://seu-app.vercel.app` (várias: separadas por vírgula) |
+| `NODE_ENV` | `production` |
+| `HOST` | `0.0.0.0` |
+
+`PORT` é injetado pelo Render; a API já lê `process.env.PORT`.
+
+4. Confirme: `GET https://sua-api.onrender.com/health`.
+
+No plano free a API **hiberna** após ~15 min sem tráfego; o 1º request pode demorar ~20–30s. Pingue `/health` antes de uma demo.
+
+### 3. Vercel (web)
+
+1. Import do GitHub (root do monorepo). O `vercel.json` na raiz já define install/build/output e rewrite SPA.
+2. Env var de Production/Preview:
+
+```text
+VITE_API_URL=https://sua-api.onrender.com
+```
+
+3. Deploy. Abra a URL `*.vercel.app`, registre o primeiro usuário (vira `ADMIN`) e teste o fluxo.
+
+Se o Root Directory do projeto for `apps/web`:
+- Install: `cd ../.. && pnpm install`
+- Build: `pnpm build`
+- Output: `dist`
+- Inclua arquivos fora do root (workspace pnpm)
+- Não precisa de `DATABASE_URL` no projeto web
 
 ## Decisões técnicas
 

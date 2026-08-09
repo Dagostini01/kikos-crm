@@ -1,3 +1,4 @@
+import cors from '@fastify/cors';
 import swagger from '@fastify/swagger';
 import scalarApiReference from '@scalar/fastify-api-reference';
 import Fastify, { type FastifyBaseLogger } from 'fastify';
@@ -19,6 +20,10 @@ type AppOptions = {
 
 export async function buildApp({ database, logger = false }: AppOptions) {
   const app = Fastify({ logger });
+
+  await app.register(cors, {
+    origin: env.CORS_ORIGIN,
+  });
 
   await app.register(swagger, {
     openapi: {

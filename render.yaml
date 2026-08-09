@@ -1,0 +1,30 @@
+# Free-tier friendly blueprint for the API (Neon DATABASE_URL is set in the dashboard).
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: kikos-crm-api
+    runtime: node
+    plan: free
+    rootDir: .
+    buildCommand: pnpm install && pnpm db:generate && pnpm --filter @kikos/api build
+    startCommand: pnpm --filter @kikos/api start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.19.0
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: LOG_LEVEL
+        value: info
+      - key: JWT_ACCESS_EXPIRES_IN
+        value: 15m
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 7d
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
