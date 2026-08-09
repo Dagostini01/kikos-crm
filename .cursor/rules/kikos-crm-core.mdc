@@ -5,34 +5,40 @@ alwaysApply: true
 
 # Kikos CRM — contexto
 
-Monorepo fullstack (desafio Kikos Fitness). Foco atual: **backend** em `apps/api`.
+Monorepo fullstack (desafio Kikos Fitness). Backend em `apps/api` consolidado. Foco atual: **frontend** em `apps/web`.
 
 ## Antes de codar
 
-1. Leia `docs/BACKEND_ARCHITECTURE.md` e o padrão já existente em Lead.
-2. Não recrie o projeto nem troque stack sem necessidade.
-3. Não implemente frontend neste momento.
-4. Não instale libs sem necessidade (YAGNI).
+1. Leia `docs/BACKEND_ARCHITECTURE.md` e `docs/FRONTEND_ARCHITECTURE.md`.
+2. Para UI, use os prints em `img/screens/` como referência visual (não pixel-perfect).
+3. Contrato e regras de negócio vêm da API — não invente campos/status no client.
+4. Não recrie o projeto nem troque stack sem necessidade.
+5. Não instale libs sem necessidade (YAGNI).
 
-## Referência
+## Referência backend
 
-**Lead** é o módulo canônico. Novos módulos (Seller → Deal → Comments → Auth) devem copiar a mesma estrutura.
+**Lead** é o módulo canônico da API. Estrutura: use-cases → repositories → controllers.
 
-Exemplos canônicos:
+## Referência frontend
 
-- `@apps/api/src/use-cases/leads/create-lead.ts`
-- `@apps/api/src/use-cases/leads/factories/`
-- `@apps/api/src/use-cases/leads/errors/`
-- `@apps/api/src/use-cases/errors/resource-not-found-error.ts`
-- `@apps/api/src/http/controllers/leads/`
-- `@apps/api/test/leads.test.ts`
+**Auth** é o módulo canônico do web. Fluxo:
 
-## Módulos novos
+```text
+Page → Feature hook/service → API client → HttpClient → apps/api
+```
 
-Antes de implementar: planejar (schema Prisma, arquivos, rotas, regras, testes) e alinhar. Só então codar.
+Exemplos:
 
-Organize use cases e specs em `src/use-cases/<recurso>/`, com factories e erros
-específicos co-localizados no recurso. Erros compartilhados permanecem em
-`src/use-cases/errors/`.
+- `@apps/web/src/features/auth/`
+- `@apps/web/src/shared/http/`
+- `@apps/web/src/pages/LoginPage.tsx`
+- `@apps/web/src/components/ui/` (shadcn)
+- `@apps/web/src/shared/ui/` (composições com children)
 
-Checklist: contract → in-memory → prisma → use cases + specs → errors → factories → controllers + schemas → routes → `app.register` → `test/<recurso>.test.ts` → typecheck/lint/test.
+UI: preferir shadcn + Tailwind; não criar CSS Modules novos sem necessidade.
+
+## Módulos novos (frontend)
+
+Antes de implementar: planejar (rotas, arquivos, mapping print↔API) e alinhar. Só então codar.
+
+Checklist: tipos/contrato → api client → hook/service → components → page/rota → loading/erro → typecheck.

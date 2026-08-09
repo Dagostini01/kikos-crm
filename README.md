@@ -1,6 +1,6 @@
 # Kikos CRM
 
-Monorepo pnpm do Kikos CRM. A API usa Fastify, TypeScript, PostgreSQL e Prisma.
+Monorepo pnpm do Kikos CRM. API (Fastify + Prisma + PostgreSQL) e web (React + Vite).
 
 ## Requisitos
 
@@ -16,10 +16,19 @@ Copy-Item apps/api/.env.example apps/api/.env
 docker compose up -d --wait postgres
 pnpm db:generate
 pnpm db:migrate
-pnpm dev
 ```
 
-A API fica disponível em `http://localhost:3333`. Para verificar aplicação e banco:
+Em terminais separados:
+
+```powershell
+pnpm dev:api
+pnpm dev:web
+```
+
+- API: `http://localhost:3333` (docs em `/reference`)
+- Web: `http://localhost:5173`
+
+Para verificar a API:
 
 ```powershell
 Invoke-RestMethod http://localhost:3333/health
@@ -28,18 +37,21 @@ Invoke-RestMethod http://localhost:3333/health
 O arquivo `apps/api/.env` contém somente valores locais e não é versionado. Atualize
 `apps/api/.env.example` sempre que uma variável obrigatória for adicionada.
 
+Opcional no web: `apps/web/.env` com `VITE_API_URL=http://localhost:3333` (padrão).
+
 ## Comandos
 
-- `pnpm dev`: inicia a API com reload.
-- `pnpm build`: gera a saída de produção em `apps/api/dist`.
-- `pnpm start`: executa a saída de produção.
-- `pnpm lint`: valida o código com ESLint.
-- `pnpm format`: formata a API com Prettier.
-- `pnpm typecheck`: verifica os tipos sem gerar arquivos.
-- `pnpm test`: executa os testes com Vitest.
-- `pnpm db:generate`: gera o Prisma Client.
-- `pnpm db:migrate`: aplica migrations em desenvolvimento.
-- `pnpm db:studio`: abre o Prisma Studio.
+- `pnpm dev` / `pnpm dev:api`: inicia a API com reload.
+- `pnpm dev:web`: inicia o frontend Vite.
+- `pnpm build`: build da API.
+- `pnpm build:web`: build do frontend.
+- `pnpm start`: executa a API em produção.
+- `pnpm lint`: ESLint (api + web).
+- `pnpm typecheck`: typecheck (api + web).
+- `pnpm test`: testes da API.
+- `pnpm db:generate` / `pnpm db:migrate` / `pnpm db:studio`: Prisma.
+
+Arquitetura: `docs/BACKEND_ARCHITECTURE.md` e `docs/FRONTEND_ARCHITECTURE.md`.
 
 ## Banco local
 
@@ -57,10 +69,10 @@ Use `docker compose down -v` apenas quando quiser apagar todos os dados locais.
 
 ```text
 apps/
-  api/
-    prisma/       schema e migrations
-    src/          código da aplicação
-    test/         testes
+  api/          backend Fastify
+  web/          frontend React + Vite
+docs/
+img/screens/    referência visual das telas
 docker-compose.yml
 pnpm-workspace.yaml
 ```
