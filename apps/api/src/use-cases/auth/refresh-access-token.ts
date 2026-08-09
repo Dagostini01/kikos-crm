@@ -43,6 +43,9 @@ export class RefreshAccessTokenUseCase {
 
     await this.refreshTokensRepository.revoke(storedToken.id);
 
-    return this.createAuthSession.execute({ userId: user.id });
+    return this.createAuthSession.execute({
+      userId: user.id,
+      role: user.role,
+    });
   }
 }

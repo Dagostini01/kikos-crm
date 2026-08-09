@@ -1,5 +1,5 @@
 import type {
-  Comment,
+  CommentWithAuthor,
   CommentsRepository,
 } from '@/repositories/comments-repository.js';
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error.js';
@@ -9,7 +9,7 @@ type GetCommentUseCaseRequest = {
 };
 
 type GetCommentUseCaseResponse = {
-  comment: Comment;
+  comment: CommentWithAuthor;
 };
 
 export class GetCommentUseCase {

@@ -18,6 +18,12 @@ export async function createDealComment(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
+  const authorId = request.user?.sub;
+
+  if (!authorId) {
+    return reply.status(401).send({ message: 'Unauthorized.' });
+  }
+
   const { dealId } = createDealCommentParamsSchema.parse(request.params);
   const body = createDealCommentBodySchema.parse(request.body);
   const createDealCommentUseCase = makeCreateDealCommentUseCase();
@@ -26,6 +32,7 @@ export async function createDealComment(
     const { comment } = await createDealCommentUseCase.execute({
       dealId,
       content: body.content,
+      authorId,
     });
 
     return reply.status(201).send({

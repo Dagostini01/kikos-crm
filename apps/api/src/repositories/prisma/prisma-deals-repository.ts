@@ -4,6 +4,7 @@ import type {
   DealStatus,
   DealWithRelations,
   DealsRepository,
+  ListDealsFilters,
   UpdateDealData,
 } from '@/repositories/deals-repository.js';
 
@@ -27,8 +28,9 @@ export class PrismaDealsRepository implements DealsRepository {
     });
   }
 
-  async findMany(): Promise<DealWithRelations[]> {
+  async findMany(filters: ListDealsFilters = {}): Promise<DealWithRelations[]> {
     return prisma.deal.findMany({
+      ...(filters.status ? { where: { status: filters.status } } : {}),
       include: relations,
       orderBy: { createdAt: 'desc' },
     });

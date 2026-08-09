@@ -195,6 +195,25 @@ describe('Deals routes', () => {
       expect(response.statusCode).toBe(200);
       expect(response.json()).toEqual({ deals: [] });
     });
+
+    it('filters deals by status', async () => {
+      const app = await createApp();
+      const { deal } = await createDeal();
+      await testDealsRepository.updateStatus(deal.id, 'WON');
+      await createDeal();
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/deals?status=WON',
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.json().deals).toHaveLength(1);
+      expect(response.json().deals[0]).toMatchObject({
+        id: deal.id,
+        status: 'WON',
+      });
+    });
   });
 
   describe('GET /deals/:id', () => {

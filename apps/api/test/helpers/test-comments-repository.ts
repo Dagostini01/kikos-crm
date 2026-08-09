@@ -2,18 +2,32 @@ import { InMemoryCommentsRepository } from '@/repositories/in-memory/in-memory-c
 import { InMemoryDealsRepository } from '@/repositories/in-memory/in-memory-deals-repository.js';
 import { InMemoryLeadsRepository } from '@/repositories/in-memory/in-memory-leads-repository.js';
 import { InMemorySellersRepository } from '@/repositories/in-memory/in-memory-sellers-repository.js';
+import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository.js';
 
 export const testCommentLeadsRepository = new InMemoryLeadsRepository();
 export const testCommentSellersRepository = new InMemorySellersRepository();
+export const testCommentUsersRepository = new InMemoryUsersRepository();
 export const testCommentDealsRepository = new InMemoryDealsRepository(
   testCommentLeadsRepository,
   testCommentSellersRepository,
 );
-export const testCommentsRepository = new InMemoryCommentsRepository();
+export const testCommentsRepository = new InMemoryCommentsRepository(
+  testCommentUsersRepository,
+);
+
+export async function createTestCommentAuthor() {
+  return testCommentUsersRepository.create({
+    name: 'Auth User',
+    email: `author-${Date.now()}@example.com`,
+    passwordHash: 'hashed:123456',
+    role: 'MEMBER',
+  });
+}
 
 export function resetTestCommentsRepository() {
   testCommentsRepository.items = [];
   testCommentDealsRepository.items = [];
   testCommentLeadsRepository.items = [];
   testCommentSellersRepository.items = [];
+  testCommentUsersRepository.items = [];
 }

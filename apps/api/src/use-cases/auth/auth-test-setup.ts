@@ -2,6 +2,7 @@ import type { Encrypter } from '@/cryptography/encrypter.js';
 import type { HashComparer } from '@/cryptography/hash-comparer.js';
 import type { HashGenerator } from '@/cryptography/hash-generator.js';
 import { InMemoryRefreshTokensRepository } from '@/repositories/in-memory/in-memory-refresh-tokens-repository.js';
+import { InMemorySellersRepository } from '@/repositories/in-memory/in-memory-sellers-repository.js';
 import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository.js';
 import { CreateAuthSession } from '@/use-cases/auth/create-auth-session.js';
 
@@ -30,6 +31,7 @@ export class FakeEncrypter implements Encrypter {
 
 export function createAuthTestSetup() {
   const usersRepository = new InMemoryUsersRepository();
+  const sellersRepository = new InMemorySellersRepository();
   const refreshTokensRepository = new InMemoryRefreshTokensRepository();
   const hasher = new FakeHasher();
   const encrypter = new FakeEncrypter();
@@ -41,6 +43,7 @@ export function createAuthTestSetup() {
 
   return {
     usersRepository,
+    sellersRepository,
     refreshTokensRepository,
     hasher,
     encrypter,

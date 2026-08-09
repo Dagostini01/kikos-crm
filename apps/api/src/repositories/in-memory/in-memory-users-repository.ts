@@ -16,6 +16,8 @@ export class InMemoryUsersRepository implements UsersRepository {
       name: data.name,
       email: data.email,
       passwordHash: data.passwordHash,
+      role: data.role,
+      sellerId: data.sellerId ?? null,
       createdAt: now,
       updatedAt: now,
     };
@@ -31,5 +33,9 @@ export class InMemoryUsersRepository implements UsersRepository {
 
   async findByEmail(email: string): Promise<User | null> {
     return this.items.find((item) => item.email === email) ?? null;
+  }
+
+  async count(): Promise<number> {
+    return this.items.length;
   }
 }

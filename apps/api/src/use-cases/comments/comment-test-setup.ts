@@ -2,15 +2,26 @@ import { InMemoryCommentsRepository } from '@/repositories/in-memory/in-memory-c
 import { InMemoryDealsRepository } from '@/repositories/in-memory/in-memory-deals-repository.js';
 import { InMemoryLeadsRepository } from '@/repositories/in-memory/in-memory-leads-repository.js';
 import { InMemorySellersRepository } from '@/repositories/in-memory/in-memory-sellers-repository.js';
+import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository.js';
 
 export function makeCommentTestSetup() {
   const leadsRepository = new InMemoryLeadsRepository();
   const sellersRepository = new InMemorySellersRepository();
+  const usersRepository = new InMemoryUsersRepository();
   const dealsRepository = new InMemoryDealsRepository(
     leadsRepository,
     sellersRepository,
   );
-  const commentsRepository = new InMemoryCommentsRepository();
+  const commentsRepository = new InMemoryCommentsRepository(usersRepository);
+
+  async function createAuthor() {
+    return usersRepository.create({
+      name: 'Auth User',
+      email: 'author@example.com',
+      passwordHash: 'hashed:123456',
+      role: 'MEMBER',
+    });
+  }
 
   async function createLead() {
     return leadsRepository.create({
@@ -38,8 +49,10 @@ export function makeCommentTestSetup() {
   return {
     leadsRepository,
     sellersRepository,
+    usersRepository,
     dealsRepository,
     commentsRepository,
+    createAuthor,
     createLead,
     createDeal,
   };

@@ -1,5 +1,5 @@
 import type {
-  Comment,
+  CommentWithAuthor,
   CommentsRepository,
 } from '@/repositories/comments-repository.js';
 import type { DealsRepository } from '@/repositories/deals-repository.js';
@@ -9,10 +9,11 @@ import { InvalidCommentContentError } from './errors/invalid-comment-content-err
 type CreateDealCommentUseCaseRequest = {
   content: string;
   dealId: string;
+  authorId: string;
 };
 
 type CreateDealCommentUseCaseResponse = {
-  comment: Comment;
+  comment: CommentWithAuthor;
 };
 
 export class CreateDealCommentUseCase {
@@ -24,6 +25,7 @@ export class CreateDealCommentUseCase {
   async execute({
     content,
     dealId,
+    authorId,
   }: CreateDealCommentUseCaseRequest): Promise<CreateDealCommentUseCaseResponse> {
     const normalizedContent = content.trim();
 
@@ -40,6 +42,7 @@ export class CreateDealCommentUseCase {
     const comment = await this.commentsRepository.create({
       content: normalizedContent,
       dealId,
+      authorId,
     });
 
     return { comment };

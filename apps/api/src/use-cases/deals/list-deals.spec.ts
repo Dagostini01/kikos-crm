@@ -14,9 +14,27 @@ describe('List Deals Use Case', () => {
     expect(deals).toHaveLength(1);
     expect(deals[0]).toEqual(
       expect.objectContaining({
-        lead: expect.objectContaining({ email: 'lead@example.com' }),
-        seller: expect.objectContaining({ email: 'seller@example.com' }),
+        lead: expect.objectContaining({
+          email: expect.stringContaining('lead-'),
+        }),
+        seller: expect.objectContaining({
+          email: expect.stringContaining('seller-'),
+        }),
       }),
     );
+  });
+
+  it('should filter deals by status', async () => {
+    const setup = makeDealTestSetup();
+    const { deal: openDeal } = await setup.createDeal({ title: 'Open deal' });
+    const { deal: wonDeal } = await setup.createDeal({ title: 'Won deal' });
+    await setup.dealsRepository.updateStatus(wonDeal.id, 'WON');
+    const sut = new ListDealsUseCase(setup.dealsRepository);
+
+    const { deals } = await sut.execute({ status: 'WON' });
+
+    expect(deals).toHaveLength(1);
+    expect(deals[0]?.id).toBe(wonDeal.id);
+    expect(openDeal.id).not.toBe(wonDeal.id);
   });
 });

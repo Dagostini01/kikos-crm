@@ -11,6 +11,7 @@ export const registerSchema = {
   response: {
     201: authSessionResponseSchema,
     400: errorResponseSchema,
+    404: errorResponseSchema,
     409: errorResponseSchema,
   },
 } as const;

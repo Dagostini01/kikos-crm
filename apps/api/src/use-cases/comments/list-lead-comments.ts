@@ -1,5 +1,5 @@
 import type {
-  Comment,
+  CommentWithAuthor,
   CommentsRepository,
 } from '@/repositories/comments-repository.js';
 import type { LeadsRepository } from '@/repositories/leads-repository.js';
@@ -10,7 +10,7 @@ type ListLeadCommentsUseCaseRequest = {
 };
 
 type ListLeadCommentsUseCaseResponse = {
-  comments: Comment[];
+  comments: CommentWithAuthor[];
 };
 
 export class ListLeadCommentsUseCase {

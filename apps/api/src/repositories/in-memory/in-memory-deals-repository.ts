@@ -6,6 +6,7 @@ import type {
   DealStatus,
   DealWithRelations,
   DealsRepository,
+  ListDealsFilters,
   UpdateDealData,
 } from '@/repositories/deals-repository.js';
 import type { LeadsRepository } from '@/repositories/leads-repository.js';
@@ -57,8 +58,12 @@ export class InMemoryDealsRepository implements DealsRepository {
     return deal ? this.withRelations(deal) : null;
   }
 
-  async findMany(): Promise<DealWithRelations[]> {
-    return Promise.all(this.items.map((deal) => this.withRelations(deal)));
+  async findMany(filters: ListDealsFilters = {}): Promise<DealWithRelations[]> {
+    const items = filters.status
+      ? this.items.filter((deal) => deal.status === filters.status)
+      : this.items;
+
+    return Promise.all(items.map((deal) => this.withRelations(deal)));
   }
 
   async update(id: string, data: UpdateDealData): Promise<DealWithRelations> {

@@ -1,0 +1,13 @@
+import type { FastifyReply, FastifyRequest } from 'fastify';
+
+import type { UserRole } from '@/repositories/users-repository.js';
+
+export function verifyUserRole(...roles: UserRole[]) {
+  return async (request: FastifyRequest, reply: FastifyReply) => {
+    const role = request.user?.role;
+
+    if (!role || !roles.includes(role)) {
+      return reply.status(403).send({ message: 'Forbidden.' });
+    }
+  };
+}

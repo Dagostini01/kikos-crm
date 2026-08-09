@@ -18,13 +18,16 @@ describe('List Lead Comments Use Case', () => {
 
   it('should list comments for a lead in chronological order', async () => {
     const lead = await setup.createLead();
+    const author = await setup.createAuthor();
     const first = await setup.commentsRepository.create({
       content: 'First',
       leadId: lead.id,
+      authorId: author.id,
     });
     const second = await setup.commentsRepository.create({
       content: 'Second',
       leadId: lead.id,
+      authorId: author.id,
     });
 
     const { comments } = await sut.execute({ leadId: lead.id });
@@ -38,14 +41,17 @@ describe('List Lead Comments Use Case', () => {
   it('should not include comments from other targets', async () => {
     const lead = await setup.createLead();
     const { deal } = await setup.createDeal();
+    const author = await setup.createAuthor();
 
     await setup.commentsRepository.create({
       content: 'Lead note',
       leadId: lead.id,
+      authorId: author.id,
     });
     await setup.commentsRepository.create({
       content: 'Deal note',
       dealId: deal.id,
+      authorId: author.id,
     });
 
     const { comments } = await sut.execute({ leadId: lead.id });

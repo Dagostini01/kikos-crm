@@ -31,10 +31,14 @@ export type CreateDealData = {
 
 export type UpdateDealData = CreateDealData;
 
+export type ListDealsFilters = {
+  status?: DealStatus | undefined;
+};
+
 export interface DealsRepository {
   create(data: CreateDealData): Promise<DealWithRelations>;
   findById(id: string): Promise<DealWithRelations | null>;
-  findMany(): Promise<DealWithRelations[]>;
+  findMany(filters?: ListDealsFilters): Promise<DealWithRelations[]>;
   update(id: string, data: UpdateDealData): Promise<DealWithRelations>;
   updateStatus(id: string, status: DealStatus): Promise<DealWithRelations>;
   delete(id: string): Promise<void>;

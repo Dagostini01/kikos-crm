@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto';
+
 import { InMemoryDealsRepository } from '@/repositories/in-memory/in-memory-deals-repository.js';
 import { InMemoryLeadsRepository } from '@/repositories/in-memory/in-memory-leads-repository.js';
 import { InMemorySellersRepository } from '@/repositories/in-memory/in-memory-sellers-repository.js';
@@ -5,25 +7,29 @@ import { InMemorySellersRepository } from '@/repositories/in-memory/in-memory-se
 export function makeDealTestSetup() {
   const leadsRepository = new InMemoryLeadsRepository();
   const sellersRepository = new InMemorySellersRepository();
-  const dealsRepository = new InMemoryDealsRepository(leadsRepository, sellersRepository);
+  const dealsRepository = new InMemoryDealsRepository(
+    leadsRepository,
+    sellersRepository,
+  );
 
   async function createRelations() {
+    const suffix = randomUUID();
     const lead = await leadsRepository.create({
       name: 'Jane Lead',
-      email: 'lead@example.com',
+      email: `lead-${suffix}@example.com`,
     });
     const seller = await sellersRepository.create({
       name: 'John Seller',
-      email: 'seller@example.com',
+      email: `seller-${suffix}@example.com`,
     });
 
     return { lead, seller };
   }
 
-  async function createDeal() {
+  async function createDeal(overrides: { title?: string } = {}) {
     const { lead, seller } = await createRelations();
     const deal = await dealsRepository.create({
-      title: 'New gym',
+      title: overrides.title ?? 'New gym',
       valueInCents: 10_000,
       leadId: lead.id,
       sellerId: seller.id,

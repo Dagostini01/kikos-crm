@@ -1,3 +1,13 @@
+export const commentAuthorSchema = {
+  type: 'object',
+  required: ['id', 'name', 'email'],
+  properties: {
+    id: { type: 'string' },
+    name: { type: 'string' },
+    email: { type: 'string', format: 'email' },
+  },
+} as const;
+
 export const commentSchema = {
   type: 'object',
   required: [
@@ -5,6 +15,8 @@ export const commentSchema = {
     'content',
     'leadId',
     'dealId',
+    'authorId',
+    'author',
     'createdAt',
     'updatedAt',
   ],
@@ -17,6 +29,8 @@ export const commentSchema = {
     dealId: {
       anyOf: [{ type: 'string' }, { type: 'null' }],
     },
+    authorId: { type: 'string' },
+    author: commentAuthorSchema,
     createdAt: { type: 'string', format: 'date-time' },
     updatedAt: { type: 'string', format: 'date-time' },
   },

@@ -41,7 +41,10 @@ export class AuthenticateUserUseCase {
       throw new InvalidCredentialsError();
     }
 
-    const session = await this.createAuthSession.execute({ userId: user.id });
+    const session = await this.createAuthSession.execute({
+      userId: user.id,
+      role: user.role,
+    });
 
     return {
       user,

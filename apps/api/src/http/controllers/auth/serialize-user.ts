@@ -5,6 +5,8 @@ export function serializeUser(user: User) {
     id: user.id,
     name: user.name,
     email: user.email,
+    role: user.role,
+    sellerId: user.sellerId,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
   };

@@ -12,6 +12,7 @@ import { RegisterUserUseCase } from '@/use-cases/auth/register-user.js';
 import { authHeader } from './helpers/auth.js';
 import {
   resetTestAuthRepository,
+  testAuthSellersRepository,
   testCreateAuthSession,
   testHasher,
   testRefreshTokensRepository,
@@ -22,6 +23,7 @@ vi.mock('@/use-cases/auth/factories/make-register-user-use-case.js', () => ({
   makeRegisterUserUseCase: () =>
     new RegisterUserUseCase(
       testUsersRepository,
+      testAuthSellersRepository,
       testHasher,
       testCreateAuthSession,
     ),

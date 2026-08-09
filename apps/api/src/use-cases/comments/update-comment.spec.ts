@@ -16,9 +16,11 @@ describe('Update Comment Use Case', () => {
 
   it('should update a comment content', async () => {
     const lead = await setup.createLead();
+    const author = await setup.createAuthor();
     const created = await setup.commentsRepository.create({
       content: 'Old note',
       leadId: lead.id,
+      authorId: author.id,
     });
 
     const { comment } = await sut.execute({
@@ -32,9 +34,11 @@ describe('Update Comment Use Case', () => {
 
   it('should reject empty content', async () => {
     const lead = await setup.createLead();
+    const author = await setup.createAuthor();
     const created = await setup.commentsRepository.create({
       content: 'Old note',
       leadId: lead.id,
+      authorId: author.id,
     });
 
     await expect(

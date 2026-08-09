@@ -15,9 +15,11 @@ describe('Get Comment Use Case', () => {
 
   it('should get a comment by id', async () => {
     const lead = await setup.createLead();
+    const author = await setup.createAuthor();
     const created = await setup.commentsRepository.create({
       content: 'Note',
       leadId: lead.id,
+      authorId: author.id,
     });
 
     const { comment } = await sut.execute({ commentId: created.id });

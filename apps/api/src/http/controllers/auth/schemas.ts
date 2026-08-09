@@ -1,10 +1,22 @@
 export const userSchema = {
   type: 'object',
-  required: ['id', 'name', 'email', 'createdAt', 'updatedAt'],
+  required: [
+    'id',
+    'name',
+    'email',
+    'role',
+    'sellerId',
+    'createdAt',
+    'updatedAt',
+  ],
   properties: {
     id: { type: 'string' },
     name: { type: 'string' },
     email: { type: 'string', format: 'email' },
+    role: { type: 'string', enum: ['ADMIN', 'MEMBER'] },
+    sellerId: {
+      anyOf: [{ type: 'string' }, { type: 'null' }],
+    },
     createdAt: { type: 'string', format: 'date-time' },
     updatedAt: { type: 'string', format: 'date-time' },
   },
@@ -44,6 +56,7 @@ export const registerBodySchema = {
     name: { type: 'string', minLength: 1 },
     email: { type: 'string', format: 'email' },
     password: { type: 'string', minLength: 6 },
+    sellerId: { type: 'string', minLength: 1 },
   },
 } as const;
 

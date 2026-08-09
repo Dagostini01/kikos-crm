@@ -18,13 +18,16 @@ describe('List Deal Comments Use Case', () => {
 
   it('should list comments for a deal in chronological order', async () => {
     const { deal } = await setup.createDeal();
+    const author = await setup.createAuthor();
     const first = await setup.commentsRepository.create({
       content: 'First',
       dealId: deal.id,
+      authorId: author.id,
     });
     const second = await setup.commentsRepository.create({
       content: 'Second',
       dealId: deal.id,
+      authorId: author.id,
     });
 
     const { comments } = await sut.execute({ dealId: deal.id });

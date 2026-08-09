@@ -18,6 +18,12 @@ export async function createLeadComment(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
+  const authorId = request.user?.sub;
+
+  if (!authorId) {
+    return reply.status(401).send({ message: 'Unauthorized.' });
+  }
+
   const { leadId } = createLeadCommentParamsSchema.parse(request.params);
   const body = createLeadCommentBodySchema.parse(request.body);
   const createLeadCommentUseCase = makeCreateLeadCommentUseCase();
@@ -26,6 +32,7 @@ export async function createLeadComment(
     const { comment } = await createLeadCommentUseCase.execute({
       leadId,
       content: body.content,
+      authorId,
     });
 
     return reply.status(201).send({

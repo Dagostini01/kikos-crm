@@ -15,9 +15,11 @@ describe('Delete Comment Use Case', () => {
 
   it('should delete a comment', async () => {
     const lead = await setup.createLead();
+    const author = await setup.createAuthor();
     const created = await setup.commentsRepository.create({
       content: 'Note',
       leadId: lead.id,
+      authorId: author.id,
     });
 
     await sut.execute({ commentId: created.id });

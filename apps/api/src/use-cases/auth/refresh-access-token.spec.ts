@@ -13,11 +13,7 @@ describe('Refresh Access Token Use Case', () => {
 
   beforeEach(() => {
     setup = createAuthTestSetup();
-    registerUser = new RegisterUserUseCase(
-      setup.usersRepository,
-      setup.hasher,
-      setup.createAuthSession,
-    );
+    registerUser = new RegisterUserUseCase(setup.usersRepository, setup.sellersRepository, setup.hasher, setup.createAuthSession);
     sut = new RefreshAccessTokenUseCase(
       setup.usersRepository,
       setup.refreshTokensRepository,

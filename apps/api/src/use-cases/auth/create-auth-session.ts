@@ -4,10 +4,12 @@ import {
   hashRefreshToken,
 } from '@/cryptography/refresh-token.js';
 import type { RefreshTokensRepository } from '@/repositories/refresh-tokens-repository.js';
+import type { UserRole } from '@/repositories/users-repository.js';
 import { parseDurationToDate } from '@/utils/parse-duration.js';
 
 type CreateAuthSessionRequest = {
   userId: string;
+  role: UserRole;
 };
 
 type CreateAuthSessionResponse = {
@@ -24,8 +26,9 @@ export class CreateAuthSession {
 
   async execute({
     userId,
+    role,
   }: CreateAuthSessionRequest): Promise<CreateAuthSessionResponse> {
-    const accessToken = await this.encrypter.encrypt({ sub: userId });
+    const accessToken = await this.encrypter.encrypt({ sub: userId, role });
     const refreshToken = generateRefreshToken();
     const tokenHash = hashRefreshToken(refreshToken);
 

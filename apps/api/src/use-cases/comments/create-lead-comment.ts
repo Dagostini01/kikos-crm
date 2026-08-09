@@ -1,5 +1,5 @@
 import type {
-  Comment,
+  CommentWithAuthor,
   CommentsRepository,
 } from '@/repositories/comments-repository.js';
 import type { LeadsRepository } from '@/repositories/leads-repository.js';
@@ -9,10 +9,11 @@ import { InvalidCommentContentError } from './errors/invalid-comment-content-err
 type CreateLeadCommentUseCaseRequest = {
   content: string;
   leadId: string;
+  authorId: string;
 };
 
 type CreateLeadCommentUseCaseResponse = {
-  comment: Comment;
+  comment: CommentWithAuthor;
 };
 
 export class CreateLeadCommentUseCase {
@@ -24,6 +25,7 @@ export class CreateLeadCommentUseCase {
   async execute({
     content,
     leadId,
+    authorId,
   }: CreateLeadCommentUseCaseRequest): Promise<CreateLeadCommentUseCaseResponse> {
     const normalizedContent = content.trim();
 
@@ -40,6 +42,7 @@ export class CreateLeadCommentUseCase {
     const comment = await this.commentsRepository.create({
       content: normalizedContent,
       leadId,
+      authorId,
     });
 
     return { comment };

@@ -12,6 +12,7 @@ import { ListLeadCommentsUseCase } from '@/use-cases/comments/list-lead-comments
 import { UpdateCommentUseCase } from '@/use-cases/comments/update-comment.js';
 import { withAuth } from './helpers/auth.js';
 import {
+  createTestCommentAuthor,
   resetTestCommentsRepository,
   testCommentDealsRepository,
   testCommentLeadsRepository,
@@ -86,17 +87,20 @@ function createDatabaseMock(): Database {
 }
 
 const apps: FastifyInstance[] = [];
+let authorId = '';
 
 async function createApp() {
+  const author = await createTestCommentAuthor();
+  authorId = author.id;
   const app = await buildApp({ database: createDatabaseMock() });
   apps.push(app);
-  return withAuth(app);
+  return withAuth(app, { userId: author.id });
 }
 
 async function createLead() {
   return testCommentLeadsRepository.create({
     name: 'Jane Lead',
-    email: 'jane@example.com',
+    email: `jane-${Date.now()}@example.com`,
   });
 }
 
@@ -104,7 +108,7 @@ async function createDeal() {
   const lead = await createLead();
   const seller = await testCommentSellersRepository.create({
     name: 'John Seller',
-    email: 'john@kikos.com',
+    email: `john-${Date.now()}@kikos.com`,
   });
   const deal = await testCommentDealsRepository.create({
     title: 'Commercial Treadmill',
@@ -124,7 +128,7 @@ afterEach(async () => {
 
 describe('Comments routes', () => {
   describe('POST /leads/:leadId/comments', () => {
-    it('creates a lead comment', async () => {
+    it('creates a lead comment with author', async () => {
       const app = await createApp();
       const lead = await createLead();
 
@@ -140,6 +144,8 @@ describe('Comments routes', () => {
           content: 'First contact made',
           leadId: lead.id,
           dealId: null,
+          authorId,
+          author: { id: authorId },
         },
       });
     });
@@ -179,18 +185,21 @@ describe('Comments routes', () => {
       const older = await testCommentsRepository.create({
         content: 'Older lead note',
         leadId: lead.id,
+        authorId,
       });
       older.createdAt = new Date('2026-01-01T10:00:00.000Z');
 
       const newer = await testCommentsRepository.create({
         content: 'Newer lead note',
         leadId: lead.id,
+        authorId,
       });
       newer.createdAt = new Date('2026-01-02T10:00:00.000Z');
 
       await testCommentsRepository.create({
         content: 'Deal note',
         dealId: deal.id,
+        authorId,
       });
 
       const response = await app.inject({
@@ -200,15 +209,9 @@ describe('Comments routes', () => {
 
       expect(response.statusCode).toBe(200);
       expect(response.json().comments).toHaveLength(2);
-      expect(response.json().comments.map((comment: { id: string }) => comment.id)).toEqual([
-        older.id,
-        newer.id,
-      ]);
       expect(
-        response.json().comments.every(
-          (comment: { dealId: string | null }) => comment.dealId === null,
-        ),
-      ).toBe(true);
+        response.json().comments.map((comment: { id: string }) => comment.id),
+      ).toEqual([older.id, newer.id]);
     });
 
     it('returns 404 when the lead does not exist', async () => {
@@ -241,6 +244,7 @@ describe('Comments routes', () => {
           content: 'Post-win follow-up',
           dealId: deal.id,
           leadId: null,
+          authorId,
         },
       });
     });
@@ -267,10 +271,12 @@ describe('Comments routes', () => {
       await testCommentsRepository.create({
         content: 'Lead note',
         leadId: lead.id,
+        authorId,
       });
       const dealComment = await testCommentsRepository.create({
         content: 'Deal note',
         dealId: deal.id,
+        authorId,
       });
 
       const response = await app.inject({
@@ -297,6 +303,7 @@ describe('Comments routes', () => {
       const comment = await testCommentsRepository.create({
         content: 'Lookup me',
         leadId: lead.id,
+        authorId,
       });
 
       const response = await app.inject({
@@ -310,6 +317,7 @@ describe('Comments routes', () => {
           id: comment.id,
           content: 'Lookup me',
           leadId: lead.id,
+          authorId,
         },
       });
     });
@@ -333,6 +341,7 @@ describe('Comments routes', () => {
       const comment = await testCommentsRepository.create({
         content: 'Draft',
         leadId: lead.id,
+        authorId,
       });
 
       const response = await app.inject({
@@ -356,6 +365,7 @@ describe('Comments routes', () => {
       const comment = await testCommentsRepository.create({
         content: 'Draft',
         leadId: lead.id,
+        authorId,
       });
 
       const response = await app.inject({
@@ -375,6 +385,7 @@ describe('Comments routes', () => {
       const comment = await testCommentsRepository.create({
         content: 'Temporary',
         leadId: lead.id,
+        authorId,
       });
 
       const response = await app.inject({

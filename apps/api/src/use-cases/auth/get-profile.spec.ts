@@ -12,11 +12,7 @@ describe('Get Profile Use Case', () => {
 
   beforeEach(() => {
     setup = createAuthTestSetup();
-    registerUser = new RegisterUserUseCase(
-      setup.usersRepository,
-      setup.hasher,
-      setup.createAuthSession,
-    );
+    registerUser = new RegisterUserUseCase(setup.usersRepository, setup.sellersRepository, setup.hasher, setup.createAuthSession);
     sut = new GetProfileUseCase(setup.usersRepository);
   });
 

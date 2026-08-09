@@ -17,12 +17,14 @@ describe('Create Lead Comment Use Case', () => {
     );
   });
 
-  it('should create a comment for a lead', async () => {
+  it('should create a comment for a lead with author', async () => {
     const lead = await setup.createLead();
+    const author = await setup.createAuthor();
 
     const { comment } = await sut.execute({
       content: '  First contact  ',
       leadId: lead.id,
+      authorId: author.id,
     });
 
     expect(comment).toEqual(
@@ -30,6 +32,12 @@ describe('Create Lead Comment Use Case', () => {
         content: 'First contact',
         leadId: lead.id,
         dealId: null,
+        authorId: author.id,
+        author: {
+          id: author.id,
+          name: author.name,
+          email: author.email,
+        },
       }),
     );
     expect(setup.commentsRepository.items).toHaveLength(1);
@@ -37,20 +45,25 @@ describe('Create Lead Comment Use Case', () => {
 
   it('should reject empty content', async () => {
     const lead = await setup.createLead();
+    const author = await setup.createAuthor();
 
     await expect(
       sut.execute({
         content: '   ',
         leadId: lead.id,
+        authorId: author.id,
       }),
     ).rejects.toBeInstanceOf(InvalidCommentContentError);
   });
 
   it('should reject a missing lead', async () => {
+    const author = await setup.createAuthor();
+
     await expect(
       sut.execute({
         content: 'Hello',
         leadId: 'missing-lead',
+        authorId: author.id,
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });

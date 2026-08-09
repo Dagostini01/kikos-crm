@@ -2,8 +2,13 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 
 import { JoseEncrypter } from '@/cryptography/jose-encrypter.js';
 import { env } from '@/env/index.js';
+import type { UserRole } from '@/repositories/users-repository.js';
 
 const encrypter = new JoseEncrypter(env.JWT_SECRET, env.JWT_ACCESS_EXPIRES_IN);
+
+function isUserRole(value: unknown): value is UserRole {
+  return value === 'ADMIN' || value === 'MEMBER';
+}
 
 export async function verifyJwt(
   request: FastifyRequest,
@@ -24,12 +29,13 @@ export async function verifyJwt(
   try {
     const payload = await encrypter.decrypt(token);
     const sub = payload.sub;
+    const role = payload.role;
 
-    if (typeof sub !== 'string' || !sub) {
+    if (typeof sub !== 'string' || !sub || !isUserRole(role)) {
       return reply.status(401).send({ message: 'Unauthorized.' });
     }
 
-    request.user = { sub };
+    request.user = { sub, role };
   } catch {
     return reply.status(401).send({ message: 'Unauthorized.' });
   }

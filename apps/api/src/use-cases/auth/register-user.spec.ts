@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
+import { hashRefreshToken } from '@/cryptography/refresh-token.js';
 import { createAuthTestSetup } from '@/use-cases/auth/auth-test-setup.js';
 import { InvalidPasswordError } from '@/use-cases/auth/errors/invalid-password-error.js';
 import { UserAlreadyExistsError } from '@/use-cases/auth/errors/user-already-exists-error.js';
 import { RegisterUserUseCase } from '@/use-cases/auth/register-user.js';
-import { hashRefreshToken } from '@/cryptography/refresh-token.js';
+import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error.js';
 
 describe('Register User Use Case', () => {
   let sut: RegisterUserUseCase;
@@ -14,28 +15,59 @@ describe('Register User Use Case', () => {
     setup = createAuthTestSetup();
     sut = new RegisterUserUseCase(
       setup.usersRepository,
+      setup.sellersRepository,
       setup.hasher,
       setup.createAuthSession,
     );
   });
 
-  it('should register a user and issue tokens', async () => {
+  it('should register the first user as ADMIN', async () => {
     const result = await sut.execute({
       name: '  Jane Doe  ',
       email: '  Jane@Example.com ',
       password: '123456',
     });
 
-    expect(result.user.id).toEqual(expect.any(String));
-    expect(result.user.name).toBe('Jane Doe');
-    expect(result.user.email).toBe('jane@example.com');
+    expect(result.user.role).toBe('ADMIN');
+    expect(result.user.sellerId).toBeNull();
     expect(result.user.passwordHash).toBe('hashed:123456');
-    expect(result.accessToken).toEqual(expect.any(String));
-    expect(result.refreshToken).toEqual(expect.any(String));
-    expect(setup.refreshTokensRepository.items).toHaveLength(1);
     expect(setup.refreshTokensRepository.items[0]?.tokenHash).toBe(
       hashRefreshToken(result.refreshToken),
     );
+  });
+
+  it('should register subsequent users as MEMBER and link a seller', async () => {
+    await sut.execute({
+      name: 'Jane Doe',
+      email: 'jane@example.com',
+      password: '123456',
+    });
+
+    const seller = await setup.sellersRepository.create({
+      name: 'John Seller',
+      email: 'seller@kikos.com',
+    });
+
+    const result = await sut.execute({
+      name: 'John Doe',
+      email: 'john@example.com',
+      password: '123456',
+      sellerId: seller.id,
+    });
+
+    expect(result.user.role).toBe('MEMBER');
+    expect(result.user.sellerId).toBe(seller.id);
+  });
+
+  it('should reject a missing seller link', async () => {
+    await expect(
+      sut.execute({
+        name: 'Jane Doe',
+        email: 'jane@example.com',
+        password: '123456',
+        sellerId: 'missing-seller',
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError);
   });
 
   it('should not allow duplicated emails', async () => {
