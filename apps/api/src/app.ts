@@ -3,6 +3,7 @@ import scalarApiReference from '@scalar/fastify-api-reference';
 import Fastify, { type FastifyBaseLogger } from 'fastify';
 
 import { env } from '@/env/index.js';
+import { commentsRoutes } from '@/http/controllers/comments/routes.js';
 import { dealsRoutes } from '@/http/controllers/deals/routes.js';
 import { healthRoutes } from '@/http/controllers/health/routes.js';
 import { leadsRoutes } from '@/http/controllers/leads/routes.js';
@@ -46,6 +47,7 @@ export async function buildApp({ database, logger = false }: AppOptions) {
   await app.register(leadsRoutes);
   await app.register(sellersRoutes);
   await app.register(dealsRoutes);
+  await app.register(commentsRoutes);
 
   return app;
 }
