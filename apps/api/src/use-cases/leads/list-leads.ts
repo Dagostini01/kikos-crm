@@ -1,7 +1,10 @@
-import type { Lead, LeadsRepository } from '@/repositories/leads-repository.js';
+import type {
+  LeadListItem,
+  LeadsRepository,
+} from '@/repositories/leads-repository.js';
 
 type ListLeadsUseCaseResponse = {
-  leads: Lead[];
+  leads: LeadListItem[];
 };
 
 export class ListLeadsUseCase {

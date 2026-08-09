@@ -16,7 +16,7 @@ export function useRegister() {
 
     try {
       await register({ name, email, password });
-      navigate('/negocios', { replace: true });
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       setError(getErrorMessage(err, 'Não foi possível criar a conta'));
     } finally {

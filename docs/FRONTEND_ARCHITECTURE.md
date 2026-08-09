@@ -31,13 +31,13 @@ Antes de implementar qualquer tela:
 |---|---|
 | Login e-mail/senha | `POST /auth/login` → tokens; logout `POST /auth/logout` |
 | Google / Esqueceu senha | **não implementar** (fora do backend) |
-| Lead: nome + e-mail | `POST/GET /leads` (campos extras do print ficam fora do payload) |
+| Lead: nome + e-mail | `POST/GET /leads` (criar: só name/email; listar: seller/status/lastInteraction via Deal/Comment) |
+| Dashboard | `/dashboard` com totais de leads, negócios e vendedores |
 | Kanban Novo / Contato / … / Fechado | Colunas: `NEW`, `IN_PROGRESS`, `WON`, `LOST` (labels PT: Novo, Em andamento, Ganho, Perdido) |
 | Criar negócio | `title`, `valueInCents`, `leadId`, `sellerId` → `POST /deals` (status inicial sempre `NEW`) |
 | Marcar ganho/perdido | `PATCH /deals/:id/won` e `/lost` |
 | Comentários no detalhe | `GET/POST /deals/:dealId/comments` |
 | Sidebar Vendedores | `GET /sellers` (mutações só ADMIN) |
-| Dashboard | redirect para `/negocios` nesta etapa |
 
 ---
 
@@ -185,14 +185,18 @@ Referência visual: `img/screens/*.png`.
 ```text
 /login                 pública
 /register              pública (criar conta)
-/                      protegida → redirect /negocios
+/                      protegida → redirect /dashboard
+/dashboard             visão geral
 /leads                 lista
 /leads/novo            criar
 /negocios              kanban
 /negocios/novo         criar
 /negocios/:id          detalhe + comentários + won/lost
 /vendedores            lista
+/vendedores/novo       criar (só ADMIN)
 ```
+
+
 
 ---
 
@@ -250,16 +254,11 @@ Subir API + web e validar o fluxo da fatia manualmente.
 - Scaffold `apps/web`
 - Auth (login/logout/me) + AppShell + rotas protegidas
 - Leads (listar + criar)
+- Negócios (kanban + criar + transições)
+- Detalhe do negócio + comentários
+- Vendedores (listar + criar ADMIN)
 - Documento de arquitetura frontend
 
 ## Próximas fatias
 
-```text
-Negócios (kanban)
-↓
-Detalhe + comentários
-↓
-Vendedores
-```
-
-Antes de cada fatia: alinhar tela (print) ↔ endpoints ↔ arquivos a criar; só então codar.
+Frontend das fatias principais do desafio concluído. Evoluções futuras (edit/delete vendedores, drag-and-drop, etc.) sob demanda.

@@ -14,6 +14,11 @@ export async function list(_request: FastifyRequest, reply: FastifyReply) {
       email: lead.email,
       createdAt: lead.createdAt.toISOString(),
       updatedAt: lead.updatedAt.toISOString(),
+      seller: lead.seller,
+      status: lead.status,
+      lastInteractionAt: lead.lastInteractionAt
+        ? lead.lastInteractionAt.toISOString()
+        : null,
     })),
   });
 }

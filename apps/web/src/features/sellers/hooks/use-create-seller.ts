@@ -1,24 +1,24 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuth } from '@/features/auth/session/use-auth';
+import { sellersApi } from '@/features/sellers/api/sellers-api';
+import type { CreateSellerInput } from '@/features/sellers/model/types';
 import { getErrorMessage } from '@/shared/http/errors';
 
-export function useLogin() {
-  const { login } = useAuth();
+export function useCreateSeller() {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function submit(email: string, password: string) {
+  async function submit(input: CreateSellerInput) {
     setError(null);
     setIsSubmitting(true);
 
     try {
-      await login({ email, password });
-      navigate('/dashboard', { replace: true });
+      await sellersApi.create(input);
+      navigate('/vendedores', { replace: true });
     } catch (err) {
-      setError(getErrorMessage(err, 'Não foi possível entrar'));
+      setError(getErrorMessage(err, 'Não foi possível salvar o vendedor'));
     } finally {
       setIsSubmitting(false);
     }

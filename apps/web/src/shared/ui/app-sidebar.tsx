@@ -17,13 +17,13 @@ type NavItem = {
   to: string;
   label: string;
   icon: typeof LayoutDashboard;
-  match?: 'exact' | 'prefix';
+  end?: boolean;
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { to: '/negocios', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/leads', label: 'Leads', icon: Users },
-  { to: '/negocios', label: 'Negócios', icon: BriefcaseBusiness, match: 'exact' },
+  { to: '/negocios', label: 'Negócios', icon: BriefcaseBusiness },
   { to: '/vendedores', label: 'Vendedores', icon: UserRound },
 ];
 
@@ -61,14 +61,13 @@ export function AppSidebar({ user, onLogout }: AppSidebarProps) {
 
           return (
             <NavLink
-              key={`${item.label}-${item.to}`}
+              key={item.to}
               to={item.to}
-              end={item.match === 'exact'}
+              end={item.end}
               className={({ isActive }) =>
                 cn(
                   'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
                   isActive &&
-                    item.label !== 'Dashboard' &&
                     'border-l-2 border-primary bg-sidebar-accent text-sidebar-accent-foreground',
                 )
               }

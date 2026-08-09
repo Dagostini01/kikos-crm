@@ -12,7 +12,7 @@ export function PublicOnlyRoute() {
   }
 
   if (status === 'authenticated') {
-    return <Navigate to="/negocios" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <Outlet />;

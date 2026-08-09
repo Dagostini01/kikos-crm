@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import type {
   CreateLeadData,
   Lead,
+  LeadListItem,
   LeadsRepository,
   UpdateLeadData,
 } from '@/repositories/leads-repository.js';
@@ -34,8 +35,13 @@ export class InMemoryLeadsRepository implements LeadsRepository {
     return this.items.find((item) => item.email === email) ?? null;
   }
 
-  async findMany(): Promise<Lead[]> {
-    return this.items;
+  async findMany(): Promise<LeadListItem[]> {
+    return this.items.map((lead) => ({
+      ...lead,
+      seller: null,
+      status: null,
+      lastInteractionAt: null,
+    }));
   }
 
   async update(id: string, data: UpdateLeadData): Promise<Lead> {
