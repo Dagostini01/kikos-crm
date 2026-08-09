@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { InMemoryLeadsRepository } from '@/repositories/in-memory/in-memory-leads-repository.js';
-import { LeadAlreadyExistsError } from './errors/lead-already-exists-error.js';
-import { ResourceNotFoundError } from './errors/resource-not-found-error.js';
+import { LeadAlreadyExistsError } from '@/use-cases/leads/errors/lead-already-exists-error.js';
+import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error.js';
 import { UpdateLeadUseCase } from './update-lead.js';
 
 describe('Update Lead Use Case', () => {

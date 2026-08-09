@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { InMemoryLeadsRepository } from '@/repositories/in-memory/in-memory-leads-repository.js';
 import { CreateLeadUseCase } from './create-lead.js';
-import { LeadAlreadyExistsError } from './errors/lead-already-exists-error.js';
+import { LeadAlreadyExistsError } from '@/use-cases/leads/errors/lead-already-exists-error.js';
 
 describe('Create Lead Use Case', () => {
   let leadsRepository: InMemoryLeadsRepository;

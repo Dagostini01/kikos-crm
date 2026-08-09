@@ -2,7 +2,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error.js';
-import { makeGetLeadUseCase } from '@/use-cases/factories/make-get-lead-use-case.js';
+import { makeGetLeadUseCase } from '@/use-cases/leads/factories/make-get-lead-use-case.js';
 
 const getLeadParamsSchema = z.object({
   id: z.string().min(1),

@@ -1,5 +1,5 @@
 import type { Lead, LeadsRepository } from '@/repositories/leads-repository.js';
-import { LeadAlreadyExistsError } from './errors/lead-already-exists-error.js';
+import { LeadAlreadyExistsError } from '@/use-cases/leads/errors/lead-already-exists-error.js';
 
 type CreateLeadUseCaseRequest = {
   name: string;

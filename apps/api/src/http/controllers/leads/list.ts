@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
-import { makeListLeadsUseCase } from '@/use-cases/factories/make-list-leads-use-case.js';
+import { makeListLeadsUseCase } from '@/use-cases/leads/factories/make-list-leads-use-case.js';
 
 export async function list(_request: FastifyRequest, reply: FastifyReply) {
   const listLeadsUseCase = makeListLeadsUseCase();

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { InMemoryLeadsRepository } from '@/repositories/in-memory/in-memory-leads-repository.js';
 import { DeleteLeadUseCase } from './delete-lead.js';
-import { ResourceNotFoundError } from './errors/resource-not-found-error.js';
+import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error.js';
 
 describe('Delete Lead Use Case', () => {
   let leadsRepository: InMemoryLeadsRepository;

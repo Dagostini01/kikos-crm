@@ -1,5 +1,5 @@
 import { PrismaLeadsRepository } from '@/repositories/prisma/prisma-leads-repository.js';
-import { CreateLeadUseCase } from '@/use-cases/create-lead.js';
+import { CreateLeadUseCase } from '@/use-cases/leads/create-lead.js';
 
 export function makeCreateLeadUseCase() {
   const leadsRepository = new PrismaLeadsRepository();

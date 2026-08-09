@@ -1,8 +1,8 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 
-import { LeadAlreadyExistsError } from '@/use-cases/errors/lead-already-exists-error.js';
-import { makeCreateLeadUseCase } from '@/use-cases/factories/make-create-lead-use-case.js';
+import { LeadAlreadyExistsError } from '@/use-cases/leads/errors/lead-already-exists-error.js';
+import { makeCreateLeadUseCase } from '@/use-cases/leads/factories/make-create-lead-use-case.js';
 
 const createLeadBodySchema = z.object({
   name: z.string().min(1),

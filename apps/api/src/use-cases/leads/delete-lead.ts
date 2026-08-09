@@ -1,5 +1,5 @@
 import type { LeadsRepository } from '@/repositories/leads-repository.js';
-import { ResourceNotFoundError } from './errors/resource-not-found-error.js';
+import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error.js';
 
 type DeleteLeadUseCaseRequest = {
   leadId: string;

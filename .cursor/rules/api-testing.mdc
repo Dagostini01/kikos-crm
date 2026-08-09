@@ -10,7 +10,7 @@ alwaysApply: false
 
 | Tipo | Onde | Como |
 |------|------|------|
-| Unitário | `src/use-cases/*.spec.ts` | InMemory repo, sem HTTP/Prisma |
+| Unitário | `src/use-cases/<recurso>/*.spec.ts` | InMemory repo, sem HTTP/Prisma |
 | HTTP | `test/<recurso>.test.ts` | `buildApp` + `inject`, factories mockadas com InMemory |
 
 ## Regras
@@ -22,7 +22,7 @@ alwaysApply: false
 
 ## Referências
 
-- Unitário: `@apps/api/src/use-cases/create-lead.spec.ts`
+- Unitário: `@apps/api/src/use-cases/leads/create-lead.spec.ts`
 - HTTP: `@apps/api/test/leads.test.ts`
 - Helper: `@apps/api/test/helpers/test-leads-repository.ts`
 

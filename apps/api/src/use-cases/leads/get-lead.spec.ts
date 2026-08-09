@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { InMemoryLeadsRepository } from '@/repositories/in-memory/in-memory-leads-repository.js';
-import { ResourceNotFoundError } from './errors/resource-not-found-error.js';
+import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error.js';
 import { GetLeadUseCase } from './get-lead.js';
 
 describe('Get Lead Use Case', () => {

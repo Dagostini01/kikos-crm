@@ -1,9 +1,9 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 
-import { LeadAlreadyExistsError } from '@/use-cases/errors/lead-already-exists-error.js';
+import { LeadAlreadyExistsError } from '@/use-cases/leads/errors/lead-already-exists-error.js';
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error.js';
-import { makeUpdateLeadUseCase } from '@/use-cases/factories/make-update-lead-use-case.js';
+import { makeUpdateLeadUseCase } from '@/use-cases/leads/factories/make-update-lead-use-case.js';
 
 const updateLeadParamsSchema = z.object({
   id: z.string().min(1),

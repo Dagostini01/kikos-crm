@@ -2,7 +2,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error.js';
-import { makeDeleteLeadUseCase } from '@/use-cases/factories/make-delete-lead-use-case.js';
+import { makeDeleteLeadUseCase } from '@/use-cases/leads/factories/make-delete-lead-use-case.js';
 
 const deleteLeadParamsSchema = z.object({
   id: z.string().min(1),

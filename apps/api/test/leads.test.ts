@@ -3,33 +3,33 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { buildApp } from '@/app.js';
 import type { Database } from '@/lib/prisma.js';
-import { CreateLeadUseCase } from '@/use-cases/create-lead.js';
-import { DeleteLeadUseCase } from '@/use-cases/delete-lead.js';
-import { GetLeadUseCase } from '@/use-cases/get-lead.js';
-import { ListLeadsUseCase } from '@/use-cases/list-leads.js';
-import { UpdateLeadUseCase } from '@/use-cases/update-lead.js';
+import { CreateLeadUseCase } from '@/use-cases/leads/create-lead.js';
+import { DeleteLeadUseCase } from '@/use-cases/leads/delete-lead.js';
+import { GetLeadUseCase } from '@/use-cases/leads/get-lead.js';
+import { ListLeadsUseCase } from '@/use-cases/leads/list-leads.js';
+import { UpdateLeadUseCase } from '@/use-cases/leads/update-lead.js';
 import {
   resetTestLeadsRepository,
   testLeadsRepository,
 } from './helpers/test-leads-repository.js';
 
-vi.mock('@/use-cases/factories/make-create-lead-use-case.js', () => ({
+vi.mock('@/use-cases/leads/factories/make-create-lead-use-case.js', () => ({
   makeCreateLeadUseCase: () => new CreateLeadUseCase(testLeadsRepository),
 }));
 
-vi.mock('@/use-cases/factories/make-list-leads-use-case.js', () => ({
+vi.mock('@/use-cases/leads/factories/make-list-leads-use-case.js', () => ({
   makeListLeadsUseCase: () => new ListLeadsUseCase(testLeadsRepository),
 }));
 
-vi.mock('@/use-cases/factories/make-get-lead-use-case.js', () => ({
+vi.mock('@/use-cases/leads/factories/make-get-lead-use-case.js', () => ({
   makeGetLeadUseCase: () => new GetLeadUseCase(testLeadsRepository),
 }));
 
-vi.mock('@/use-cases/factories/make-update-lead-use-case.js', () => ({
+vi.mock('@/use-cases/leads/factories/make-update-lead-use-case.js', () => ({
   makeUpdateLeadUseCase: () => new UpdateLeadUseCase(testLeadsRepository),
 }));
 
-vi.mock('@/use-cases/factories/make-delete-lead-use-case.js', () => ({
+vi.mock('@/use-cases/leads/factories/make-delete-lead-use-case.js', () => ({
   makeDeleteLeadUseCase: () => new DeleteLeadUseCase(testLeadsRepository),
 }));
 

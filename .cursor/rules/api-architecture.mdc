@@ -17,7 +17,8 @@ Controller → Use Case → Repository interface → Prisma/InMemory
 - Controller: Zod + factory + status HTTP. Sem Prisma, sem regra de negócio.
 - Use Case: regra de domínio. Sem Fastify, sem status HTTP, sem `Prisma*Repository` concreto.
 - Repository: contract em `repositories/<recurso>-repository.ts`; implementações em `in-memory/` e `prisma/`.
-- Factory: composition root em `use-cases/factories/`.
+- Use Case: organizado em `use-cases/<recurso>/`, com specs ao lado.
+- Factory: composition root em `use-cases/<recurso>/factories/`.
 
 ## HTTP (por endpoint)
 
@@ -36,8 +37,8 @@ Controller → Use Case → Repository interface → Prisma/InMemory
 
 ## Erros
 
-- Domínio em `use-cases/errors/` (ex.: `LeadAlreadyExistsError`).
-- Reutilize `ResourceNotFoundError` para 404 genérico.
+- Erros específicos em `use-cases/<recurso>/errors/` (ex.: `LeadAlreadyExistsError`).
+- Erros compartilhados em `use-cases/errors/`; reutilize `ResourceNotFoundError` para 404 genérico.
 - Traduza domínio → HTTP só no controller / `error-handler.ts`.
 
 ## Anti-padrões

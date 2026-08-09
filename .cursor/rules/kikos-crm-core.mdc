@@ -20,12 +20,19 @@ Monorepo fullstack (desafio Kikos Fitness). Foco atual: **backend** em `apps/api
 
 Exemplos canônicos:
 
-- `@apps/api/src/use-cases/create-lead.ts`
+- `@apps/api/src/use-cases/leads/create-lead.ts`
+- `@apps/api/src/use-cases/leads/factories/`
+- `@apps/api/src/use-cases/leads/errors/`
+- `@apps/api/src/use-cases/errors/resource-not-found-error.ts`
 - `@apps/api/src/http/controllers/leads/`
 - `@apps/api/test/leads.test.ts`
 
 ## Módulos novos
 
 Antes de implementar: planejar (schema Prisma, arquivos, rotas, regras, testes) e alinhar. Só então codar.
+
+Organize use cases e specs em `src/use-cases/<recurso>/`, com factories e erros
+específicos co-localizados no recurso. Erros compartilhados permanecem em
+`src/use-cases/errors/`.
 
 Checklist: contract → in-memory → prisma → use cases + specs → errors → factories → controllers + schemas → routes → `app.register` → `test/<recurso>.test.ts` → typecheck/lint/test.
