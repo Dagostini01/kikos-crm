@@ -1,6 +1,8 @@
 import type { FastifyInstance } from 'fastify';
 
 import { verifyJwt } from '@/http/middlewares/verify-jwt.js';
+import { aiInsights } from './ai-insights.js';
+import { generateDealAiInsightsSchema } from './ai-insights.schema.js';
 import { create } from './create.js';
 import { createDealSchema } from './create.schema.js';
 import { remove } from './delete.js';
@@ -24,6 +26,11 @@ export async function dealsRoutes(app: FastifyInstance) {
   app.post('/deals', { schema: createDealSchema }, create);
   app.get('/deals', { schema: listDealsSchema }, list);
   app.get('/deals/:id', { schema: getDealSchema }, get);
+  app.post(
+    '/deals/:id/ai/insights',
+    { schema: generateDealAiInsightsSchema },
+    aiInsights,
+  );
   app.put('/deals/:id', { schema: updateDealSchema }, update);
   app.delete('/deals/:id', { schema: deleteDealSchema }, remove);
   app.patch(

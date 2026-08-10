@@ -1,4 +1,8 @@
-import type { CreateDealInput, Deal } from '@/features/deals/model/types';
+import type {
+  CreateDealInput,
+  Deal,
+  DealAiInsights,
+} from '@/features/deals/model/types';
 import { httpClient } from '@/shared/http/client';
 
 type DealsResponse = {
@@ -34,5 +38,9 @@ export const dealsApi = {
 
   markLost(dealId: string) {
     return httpClient.patch<DealResponse>(`/deals/${dealId}/lost`);
+  },
+
+  generateAiInsights(dealId: string) {
+    return httpClient.post<DealAiInsights>(`/deals/${dealId}/ai/insights`);
   },
 };

@@ -20,6 +20,12 @@ const envSchema = z.object({
         .map((origin) => origin.trim())
         .filter(Boolean),
     ),
+  /** Optional. Without it, POST /deals/:id/ai/insights returns 503. */
+  OPENAI_API_KEY: z.preprocess(
+    (value) => (typeof value === 'string' && value.trim() === '' ? undefined : value),
+    z.string().min(1).optional(),
+  ),
+  OPENAI_MODEL: z.string().min(1).default('gpt-4o-mini'),
 });
 
 export type Env = z.infer<typeof envSchema>;

@@ -2,6 +2,7 @@ import { ArrowLeft } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
+import { DealAiInsightsCard } from '@/features/deals/components/DealAiInsights';
 import { DealComments } from '@/features/deals/components/DealComments';
 import { DealDetailMeta } from '@/features/deals/components/DealDetailMeta';
 import { DealDetailSummary } from '@/features/deals/components/DealDetailSummary';
@@ -15,13 +16,17 @@ export function DealDetailPage() {
     comments,
     error,
     actionError,
+    aiInsights,
+    aiError,
     isLoading,
     isPendingAction,
     isSubmittingComment,
+    isGeneratingAi,
     markInProgress,
     markWon,
     markLost,
     addComment,
+    generateAiInsights,
   } = useDealDetail(id);
 
   if (isLoading) {
@@ -78,6 +83,12 @@ export function DealDetailPage() {
             onMarkLost={() => void markLost()}
           />
           <DealDetailMeta deal={deal} />
+          <DealAiInsightsCard
+            insights={aiInsights}
+            isLoading={isGeneratingAi}
+            error={aiError}
+            onGenerate={() => void generateAiInsights()}
+          />
         </div>
 
         <DealComments

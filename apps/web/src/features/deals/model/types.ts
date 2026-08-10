@@ -31,3 +31,9 @@ export type CreateDealInput = {
   leadId: string;
   sellerId: string;
 };
+
+export type DealAiInsights = {
+  summary: string;
+  nextStep: string;
+  model: string;
+};

@@ -28,6 +28,7 @@ No plano free do Render a API **hiberna** após ~15 min sem tráfego. Se o login
 | API | Fastify + Prisma + PostgreSQL (`apps/api`) |
 | Web | React 19 + Vite + TypeScript + React Router + shadcn/ui + Tailwind CSS v4 (`apps/web`) |
 | Auth | JWT (access) + refresh token opaco |
+| IA | OpenAI (`gpt-4o-mini`) — resumo + próximo passo no detalhe do negócio |
 | Deploy | Neon (DB) + Render (API) + Vercel (web) |
 
 Referência visual: prints em `img/screens/` e [Figma do desafio](https://www.figma.com/design/torONxnd1LUOplv6f9ccgA/Kiko---CRM) (não pixel-perfect).
@@ -51,7 +52,7 @@ Comparativo com as **funcionalidades obrigatórias** de `docs/DESCRIPTION.md`:
 | Board (kanban) | Entregue | Colunas por status; transição por **botões** (não drag-and-drop) + detalhes / ganho / perdido |
 | README (como rodar + decisões) | Entregue | Este arquivo |
 | Hospedar a aplicação (bônus) | Entregue | Links na seção [Demo online](#demo-online) |
-| Funcionalidade de IA (bônus) | Não feito | Fora do escopo desta entrega |
+| Funcionalidade de IA (bônus) | Entregue | No detalhe do negócio: resumo dos comentários + sugestão de próximo passo (`POST /deals/:id/ai/insights`) |
 | Testes automatizados (diferencial) | Parcial | Suite de testes na API (`pnpm test`); sem E2E no web |
 
 ### Escopo consciente / adaptações
@@ -60,6 +61,27 @@ Comparativo com as **funcionalidades obrigatórias** de `docs/DESCRIPTION.md`:
 - Kanban com botões de transição (aceito pelo enunciado: “arrastar e soltar, **ou outra ação de UI**”).
 - Comentários na UI focados no negócio; endpoint de comentários em lead existe na API.
 - Lead no schema: nome + e-mail (sem inventar empresa/telefone fora do contrato).
+
+### Assistente IA (bônus)
+
+No detalhe de um negócio há o card **Assistente IA**:
+
+1. A API monta o contexto (título, status, valor, lead, vendedor, comentários).
+2. Chama a OpenAI (`OPENAI_API_KEY`, modelo `OPENAI_MODEL` / padrão `gpt-4o-mini`).
+3. Devolve JSON com `summary` e `nextStep`.
+
+A chave fica **somente no backend**. Sem a variável, o endpoint responde `503`.
+
+Para ativar localmente, no `apps/api/.env`:
+
+```env
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-4o-mini
+```
+
+Em produção, configure `OPENAI_API_KEY` no Render e faça redeploy da API.
+
+> A assinatura do ChatGPT (Plus/Pro) **não** substitui a API key de [platform.openai.com](https://platform.openai.com/api-keys).
 
 ---
 
@@ -148,6 +170,7 @@ docker compose down
 - Lead: nome + e-mail; listagem enriquecida com vendedor/status/última interação via relações.
 - Deal: status de funil + valor em centavos; transições só por endpoints dedicados.
 - Soft delete em leads/deals/sellers.
+- IA no detalhe do deal: resumo + próximo passo via OpenAI (chave só no servidor).
 
 ### Frontend
 
@@ -164,7 +187,7 @@ docker compose down
 | API | Render (`render.yaml`) |
 | Web | Vercel (`vercel.json` / Root `apps/web`) |
 
-Variáveis relevantes da API em produção: `DATABASE_URL`, `JWT_SECRET` (≥32), `CORS_ORIGIN` (URL do front), `HOST=0.0.0.0`, `NODE_ENV=production`.  
+Variáveis relevantes da API em produção: `DATABASE_URL`, `JWT_SECRET` (≥32), `CORS_ORIGIN` (URL do front), `HOST=0.0.0.0`, `NODE_ENV=production`, `OPENAI_API_KEY` (opcional, bônus de IA), `OPENAI_MODEL` (opcional).  
 Web: `VITE_API_URL` apontando para a API pública.
 
 Detalhes de arquitetura: `docs/BACKEND_ARCHITECTURE.md` e `docs/FRONTEND_ARCHITECTURE.md`.
