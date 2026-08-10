@@ -23,7 +23,7 @@ export function DashboardPage() {
       title="Dashboard"
       description="Visão geral do pipeline de vendas"
       actions={
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link to="/negocios">Abrir Negócios</Link>
         </Button>
       }

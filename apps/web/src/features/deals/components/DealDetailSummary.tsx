@@ -32,11 +32,11 @@ export function DealDetailSummary({
   return (
     <Card>
       <CardHeader className="flex-row items-start justify-between gap-3 space-y-0">
-        <div className="space-y-1">
-          <p className="text-xs text-muted-foreground">ID: {deal.id}</p>
-          <CardTitle className="text-lg">{deal.title}</CardTitle>
+        <div className="min-w-0 space-y-1">
+          <p className="truncate text-xs text-muted-foreground">ID: {deal.id}</p>
+          <CardTitle className="text-lg break-words">{deal.title}</CardTitle>
         </div>
-        <Badge variant="outline" className={meta.valueClassName}>
+        <Badge variant="outline" className={`shrink-0 ${meta.valueClassName}`}>
           {meta.label}
         </Badge>
       </CardHeader>

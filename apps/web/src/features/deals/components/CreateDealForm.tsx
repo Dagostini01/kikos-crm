@@ -139,12 +139,13 @@ export function CreateDealForm() {
         <p className="text-sm text-destructive">{formError ?? error}</p>
       ) : null}
 
-      <div className="flex justify-end gap-2">
-        <Button asChild variant="outline">
+      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <Button asChild variant="outline" className="w-full sm:w-auto">
           <Link to="/negocios">Cancelar</Link>
         </Button>
         <Button
           type="submit"
+          className="w-full sm:w-auto"
           disabled={
             isSubmitting || leads.length === 0 || sellers.length === 0
           }

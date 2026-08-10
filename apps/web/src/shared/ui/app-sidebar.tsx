@@ -43,11 +43,23 @@ function roleLabel(role: User['role']) {
 type AppSidebarProps = {
   user: User;
   onLogout: () => void;
+  onNavigate?: () => void;
+  className?: string;
 };
 
-export function AppSidebar({ user, onLogout }: AppSidebarProps) {
+export function AppSidebar({
+  user,
+  onLogout,
+  onNavigate,
+  className,
+}: AppSidebarProps) {
   return (
-    <aside className="flex min-h-svh w-60 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
+    <aside
+      className={cn(
+        'flex h-full min-h-svh w-60 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground',
+        className,
+      )}
+    >
       <div className="flex items-baseline gap-2 px-5 py-5">
         <span className="text-lg font-bold tracking-wide">KIKOS</span>
         <span className="text-xs font-bold tracking-widest text-primary">
@@ -64,6 +76,7 @@ export function AppSidebar({ user, onLogout }: AppSidebarProps) {
               key={item.to}
               to={item.to}
               end={item.end}
+              onClick={onNavigate}
               className={({ isActive }) =>
                 cn(
                   'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',

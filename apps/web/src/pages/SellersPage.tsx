@@ -20,7 +20,7 @@ export function SellersPage() {
       title="Vendedores"
       actions={
         <>
-          <div className="relative w-full max-w-xs">
+          <div className="relative w-full sm:max-w-xs">
             <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={query}
@@ -31,7 +31,7 @@ export function SellersPage() {
             />
           </div>
           {isAdmin ? (
-            <Button asChild>
+            <Button asChild className="w-full sm:w-auto">
               <Link to="/vendedores/novo">
                 <Plus />
                 Novo Vendedor

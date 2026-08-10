@@ -18,15 +18,21 @@ export function Page({
   children,
 }: PageProps) {
   return (
-    <div className={cn('flex flex-col gap-6', className)}>
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+    <div className={cn('flex flex-col gap-4 sm:gap-6', className)}>
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
+        <div className="min-w-0 space-y-1">
+          <h1 className="text-xl font-semibold tracking-tight break-words sm:text-2xl">
+            {title}
+          </h1>
           {description ? (
             <p className="text-sm text-muted-foreground">{description}</p>
           ) : null}
         </div>
-        {actions ? <div className="flex items-center gap-2">{actions}</div> : null}
+        {actions ? (
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-end">
+            {actions}
+          </div>
+        ) : null}
       </div>
       {children}
     </div>

@@ -49,7 +49,7 @@ export function LeadsPage() {
       title="Lista de Leads"
       actions={
         <>
-          <div className="relative w-full max-w-xs">
+          <div className="relative w-full sm:max-w-xs">
             <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={query}
@@ -59,7 +59,7 @@ export function LeadsPage() {
               aria-label="Buscar leads"
             />
           </div>
-          <Button asChild>
+          <Button asChild className="w-full sm:w-auto">
             <Link to="/leads/novo">
               <Plus />
               Novo Lead
@@ -68,15 +68,15 @@ export function LeadsPage() {
         </>
       }
     >
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center">
           <Select
             value={statusFilter}
             onValueChange={(value) =>
               setStatusFilter(value as typeof statusFilter)
             }
           >
-            <SelectTrigger className="h-9 w-[200px]">
+            <SelectTrigger className="h-9 w-full sm:w-[200px]">
               <SelectValue placeholder="Status: Todos" />
             </SelectTrigger>
             <SelectContent>
@@ -94,7 +94,7 @@ export function LeadsPage() {
               setSellerFilter(value as typeof sellerFilter)
             }
           >
-            <SelectTrigger className="h-9 w-[220px]">
+            <SelectTrigger className="h-9 w-full sm:w-[220px]">
               <SelectValue placeholder="Vendedor: Todos" />
             </SelectTrigger>
             <SelectContent>

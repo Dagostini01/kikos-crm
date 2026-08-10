@@ -22,7 +22,7 @@ export function DealsBoard({
   onMarkLost,
 }: DealsBoardProps) {
   return (
-    <div className="flex gap-4 overflow-x-auto pb-2">
+    <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-3 sm:mx-0 sm:gap-4 sm:px-0 sm:snap-none">
       {columns.map((column) => (
         <DealColumn
           key={column.status}

@@ -37,7 +37,7 @@ export function DealDetailPage() {
       <Page
         title="Negócio"
         actions={
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" className="w-full sm:w-auto">
             <Link to="/negocios">
               <ArrowLeft />
               Voltar ao board
@@ -56,7 +56,7 @@ export function DealDetailPage() {
     <Page
       title={deal.title}
       actions={
-        <Button asChild variant="outline">
+        <Button asChild variant="outline" className="w-full sm:w-auto">
           <Link to="/negocios">
             <ArrowLeft />
             Voltar ao board

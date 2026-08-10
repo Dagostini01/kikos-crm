@@ -23,7 +23,7 @@ export function DealColumn({
   const meta = DEAL_STATUS_META[status];
 
   return (
-    <section className="flex w-72 shrink-0 flex-col gap-3">
+    <section className="flex w-[min(18rem,85vw)] shrink-0 snap-start flex-col gap-3 sm:w-72">
       <header className="flex items-center justify-between gap-2 px-1">
         <div className="flex items-center gap-2">
           <span className={`size-2 rounded-full ${meta.dotClassName}`} />

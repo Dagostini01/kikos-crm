@@ -12,7 +12,7 @@ import { RegisterForm } from '@/features/auth/components/RegisterForm';
 
 export function RegisterPage() {
   return (
-    <div className="grid min-h-svh place-items-center bg-background p-6">
+    <div className="grid min-h-svh place-items-center bg-background p-4 sm:p-6">
       <Card className="w-full max-w-md">
         <CardHeader className="items-center text-center">
           <CardTitle className="flex items-baseline justify-center gap-2">

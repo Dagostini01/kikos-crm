@@ -51,11 +51,11 @@ export function CreateLeadForm() {
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
-      <div className="flex justify-end gap-2">
-        <Button asChild variant="outline">
+      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <Button asChild variant="outline" className="w-full sm:w-auto">
           <Link to="/leads">Cancelar</Link>
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto">
           {isSubmitting ? 'Salvando…' : 'Salvar Lead'}
         </Button>
       </div>
