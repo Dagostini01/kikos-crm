@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { commentsApi } from '@/features/comments/api/comments-api';
 import type { Comment } from '@/features/comments/model/types';
 import { dealsApi } from '@/features/deals/api/deals-api';
+import { mapAiErrorMessage } from '@/features/deals/lib/map-ai-error-message';
 import type { Deal, DealAiInsights } from '@/features/deals/model/types';
 import { getErrorMessage } from '@/shared/http/errors';
 
@@ -101,12 +102,7 @@ export function useDealDetail(dealId: string | undefined) {
       const insights = await dealsApi.generateAiInsights(dealId);
       setAiInsights(insights);
     } catch (err) {
-      setAiError(
-        getErrorMessage(
-          err,
-          'Não foi possível gerar insights com IA. Verifique se OPENAI_API_KEY está configurada na API.',
-        ),
-      );
+      setAiError(mapAiErrorMessage(err));
     } finally {
       setIsGeneratingAi(false);
     }

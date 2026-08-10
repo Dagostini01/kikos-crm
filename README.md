@@ -134,7 +134,21 @@ Web (opcional): `apps/web/.env` com `VITE_API_URL=/api` (proxy do Vite em dev).
 - `pnpm dev:api` / `pnpm dev:web`
 - `pnpm build` / `pnpm build:web` / `pnpm start`
 - `pnpm lint` / `pnpm typecheck` / `pnpm test`
-- `pnpm db:generate` / `pnpm db:migrate` / `pnpm db:migrate:deploy` / `pnpm db:studio`
+- `pnpm db:generate` / `pnpm db:migrate` / `pnpm db:migrate:deploy` / `pnpm db:seed` / `pnpm db:studio`
+
+### Dados de demonstração
+
+Com a `DATABASE_URL` apontando para o banco desejado (local ou Neon):
+
+```powershell
+pnpm db:seed
+```
+
+O seed é idempotente nos leads/vendedores demo e recria os negócios/comentários. Inclui:
+
+- 3 vendedores, 6 leads, 6 negócios (Novo / Em andamento / Ganho / Perdido)
+- Comentários ricos para testar o Assistente IA (ex.: FitLife e IronBox)
+- Mantém o admin `admin@admin.com.br` / `admin123456`
 
 ### Banco local (Docker)
 
