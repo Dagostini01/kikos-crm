@@ -23,6 +23,7 @@ export async function buildApp({ database, logger = false }: AppOptions) {
 
   await app.register(cors, {
     origin: env.CORS_ORIGIN,
+    methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   });
 
   await app.register(swagger, {
